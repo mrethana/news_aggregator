@@ -10,23 +10,43 @@ class Content(Base):
     id = Column(Integer, primary_key=True)
     content_url = Column(String(600))
     image_url = Column(String(600))
-    # description = Column(String(600))
     title = Column(String(600))
     published = Column(String(600))
     medium_id = Column(Integer, ForeignKey('mediums.id'))
     medium = relationship('Medium', back_populates = 'content')
     provider_id = Column(Integer, ForeignKey('providers.id'))
     provider = relationship('Provider', back_populates = 'content')
-    search_param = Column(VARCHAR(100))
+    category_id = Column(Integer, ForeignKey('categories.id'))
+    category = relationship('Category', back_populates = 'content')
+    # sub_categories = relationship('Category',secondary='content_categories')
+
 
 class Provider(Base):
     __tablename__ = 'providers'
     id = Column(Integer, primary_key = True)
-    provider_name = Column(String(100))
-    newsapi_id = Column(String(100))
+    expertise = Column(String(100))
+    api_id = Column(String(100))
     content = relationship('Content', back_populates = 'provider')
+    expertise_id = Column(Integer, ForeignKey('expertise.id'))
+    expertise = relationship('Expertise', back_populates = 'provider')
 
-# class Categories(Model)
+class Category(Base):
+    __tablename__ = 'categories'
+    id = Column(Integer, primary_key = True)
+    name = Column(String(100))
+    content = relationship('Content', back_populates = 'category')
+    # actors = relationship('Actor',secondary='actor_roles') to be sub categories
+
+class ContentCategories(Base):
+     __tablename__ = 'content_categories'
+    content_id = Column(Integer, ForeignKey('content.id'), primary_key = True)
+    category_id = Column(Integer, ForeignKey('categories.id'), primary_key = True)
+
+class Expertise(Base):
+    __tablename__ = 'expertise'
+    id = Column(Integer, primary_key = True)
+    type = Column(String(100))
+    provider = relationship('Provider', back_populates = 'expertise')
 
 class Medium(Base):
     __tablename__ = 'mediums'

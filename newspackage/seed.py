@@ -73,10 +73,10 @@ def add_content_objects():
         print(content)
         session.commit()
 
-print('Blockchain search...')
-bchain = quick_search('blockchain')
-find_or_create_content(bchain)
-
-add_medium_objects()
-add_provider_objects()
-add_content_objects()
+# print('Blockchain search...')
+# bchain = quick_search('blockchain')
+# find_or_create_content(bchain)
+#
+# add_medium_objects()
+# add_provider_objects()
+# add_content_objects()
