@@ -1,7 +1,7 @@
-from newspackage.apikeys import *
-from newspackage.models import *
+from apikeys import *
+from models import *
+from __init__ import *
 # from apikeys import *
-
 import pafy
 import requests
 import re
@@ -10,7 +10,6 @@ import time
 from bs4 import BeautifulSoup
 import pandas as pd
 from IPython.core.display import HTML, Image
-# from PIL import Image
 
 
 sources_list = ['abc-news',
@@ -164,10 +163,10 @@ def quick_search(parameter):
         df = clean_articles(parameter)
         print('Scraping podcasts...')
         audio_df = pd.DataFrame(pull_pods(parameter))
-        print('Scraping Videos...')
-        video_df = pd.DataFrame(pull_videos(parameter))
+        # print('Scraping Videos...')
+        # video_df = pd.DataFrame(pull_videos(parameter))
         print('Merging data....')
-        df = df.append(video_df, ignore_index=True)
+        # df = df.append(video_df, ignore_index=True)
         df = df.append(audio_df, ignore_index=True)
         df['search_term'] = parameter
         return df
@@ -175,7 +174,7 @@ def quick_search(parameter):
         # print('Data Loaded!')
 
 def query_content(Limit, Medium, search_param):
-    all_objects = [content for content in Content.query.all() if content.medium.name == Medium if content.search_param == search_param]
+    all_objects = [content for content in session.query(Content).all() if content.medium.name == Medium if content.search_param == search_param]
     if len(all_objects) < 1:
         print('No Content')
     else:

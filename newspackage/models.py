@@ -34,9 +34,9 @@ class Medium(Base):
     name = Column(String(100))
     content = relationship('Content', back_populates = 'medium')
 
-# create_all()
+# for dash
 
-# class Content(Base):
+# class Content(db.Model):
 #     __tablename__ = 'content'
 #     id = db.Column(db.Integer, primary_key=True)
 #     content_url = db.Column(db.String(600))
