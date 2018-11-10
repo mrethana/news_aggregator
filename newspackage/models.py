@@ -12,6 +12,7 @@ class Content(Base):
     image_url = Column(String(600))
     title = Column(String(600))
     published = Column(String(600))
+    length = Column(Integer)
     medium_id = Column(Integer, ForeignKey('mediums.id'))
     medium = relationship('Medium', back_populates = 'content')
     provider_id = Column(Integer, ForeignKey('providers.id'))
@@ -37,10 +38,10 @@ class Category(Base):
     content = relationship('Content', back_populates = 'category')
     # actors = relationship('Actor',secondary='actor_roles') to be sub categories
 
-class ContentCategories(Base):
-     __tablename__ = 'content_categories'
-    content_id = Column(Integer, ForeignKey('content.id'), primary_key = True)
-    category_id = Column(Integer, ForeignKey('categories.id'), primary_key = True)
+# class ContentCategories(Base):
+#      __tablename__ = 'content_categories'
+#     content_id = Column(Integer, ForeignKey('content.id'), primary_key = True)
+#     category_id = Column(Integer, ForeignKey('categories.id'), primary_key = True)
 
 class Expertise(Base):
     __tablename__ = 'expertise'
