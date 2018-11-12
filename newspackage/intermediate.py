@@ -59,8 +59,10 @@ def diet_NYT():
     for word in ['keto','ketogenic','paleo','vegan','vegetarian']:
         df = NYT_api_call_parameter_ALLTIME(word,0,nyt_api_key)
         empty = empty.append(df, sort=True)
+        print('Pulled '+word)
         time.sleep(2)
-    empty = empty.drop(['abstract'],axis = 1)
+    empty = empty.drop(['abstract','section_name'],axis = 1)
+    empty = empty.rename(index=str, columns={"_id": "source_id", "document_type": "medium",'pub_date':'date','snippet':'description','word_count':'length'})
     return empty
 
 # def general_health():
@@ -72,8 +74,8 @@ def diet_NYT():
 #     return empty
 
 def intermediate_search():
-    df1 = general_health()
-    # df2 = diet_NYT()
+    # df1 = general_health()
+    df2 = diet_NYT()
     # frames = [df1,df2]
     # result = pd.concat(frames)
-    return df1 #result
+    return df2 #result

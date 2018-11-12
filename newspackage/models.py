@@ -25,7 +25,7 @@ class Content(Base):
 class Provider(Base):
     __tablename__ = 'providers'
     id = Column(Integer, primary_key = True)
-    expertise = Column(String(100))
+    name = Column(String(100))
     api_id = Column(String(100))
     content = relationship('Content', back_populates = 'provider')
     expertise_id = Column(Integer, ForeignKey('expertise.id'))
