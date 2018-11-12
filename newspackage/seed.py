@@ -4,6 +4,7 @@ from __init__ import session
 import time
 from __init__ import *
 from intermediate import *
+from social import *
 
 new_medium_objects = []
 new_provider_objects = []
@@ -108,9 +109,13 @@ def add_content_objects():
         print(content)
         session.commit()
 
-print('Diet search...')
-diet = intermediate_search()
-find_or_create_content(diet)
+# print('Diet search...')
+# diet = intermediate_search()
+# find_or_create_content(diet)
+
+print('Tweets search...')
+tweets = twitter_api_call(twitter_handles)
+find_or_create_content(tweets)
 
 add_medium_objects()
 add_provider_objects()

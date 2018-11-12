@@ -173,8 +173,22 @@ def quick_search(parameter):
         # df.to_csv('Archive_CSV/current_search.csv')
         # print('Data Loaded!')
 
+class Tweet(object):
+    def __init__(self, s, embed_str=False):
+        if not embed_str:
+            # Use Twitter's oEmbed API
+            # https://dev.twitter.com/web/embedded-tweets
+            api = 'https://publish.twitter.com/oembed?url={}'.format(s)
+            response = requests.get(api)
+            self.text = response.json()["html"]
+        else:
+            self.text = s
+
+    def _repr_html_(self):
+        return self.text
+
 def query_content(Limit, Medium, Formality, Max_Length, search_param):
-    all_objects = [content for content in session.query(Content).all() if content.medium.name == Medium if content.category.name in search_param if content.provider.formality.type == Formality if content.length < Max_Length]
+    all_objects = [content for content in session.query(Content).all() if content.medium.name == Medium if search_param in content.category.name if content.provider.formality.type == Formality if content.length < Max_Length]
     if len(all_objects) < 1:
         print('No Content')
     else:
@@ -194,7 +208,10 @@ def query_content(Limit, Medium, Formality, Max_Length, search_param):
                 source_name = all_objects[i].provider.name
                 display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
                 display(HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+link+'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>'))
-        else:
+        elif Medium == 'audio':
             for i in range (0, Limit):
                 link = all_objects[i].content_url
                 display(HTML("<iframe src="+"'"+link+"'"+ "style='width:100%; height:100px;' scrolling='no' frameborder='no'></iframe>"))
+        else:
+            for i in range (0, Limit):
+                display(Tweet(all_objects[i].content_url))
