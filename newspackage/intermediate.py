@@ -12,6 +12,12 @@ from apikeys import *
 
 today = int(str(date.today()).replace('-',''))
 last_week = int(str(date.today() - datetime.timedelta(days = 14)).replace('-',''))
+image_dict = {'keto': 'https://theindianspot.com/wp-content/uploads/2017/09/KETO-DIET-ALL-YOU-WANT-TO-KNOW.jpg',
+             'ketogenic': 'https://theindianspot.com/wp-content/uploads/2017/09/KETO-DIET-ALL-YOU-WANT-TO-KNOW.jpg',
+             'paleo': 'https://images.agoramedia.com/everydayhealth/gcms/Can-the-Paleo-Diet-Help-Diabetes-1440x810.jpg',
+            'paleolithic': 'https://images.agoramedia.com/everydayhealth/gcms/Can-the-Paleo-Diet-Help-Diabetes-1440x810.jpg',
+             'vegan': 'https://familydoctor.org/wp-content/uploads/2011/09/shutterstock_413417941-705x468.jpg',
+             'vegetarian': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQo-azo8tn-BcljdjG3wp5Oub2vmC3OvDJ2-EXIhxB5dG3EJAq-'}
 
 def NYT_title_clean(df):
     titles = []
@@ -51,12 +57,12 @@ def NYT_api_call_parameter_ALLTIME(param, page, key):
     df = pd.DataFrame(data['response']['docs'])
     df = NYT_dataframe_clean(df)
     df['param'] = param
-    df['image_url'] = 'https://theindianspot.com/wp-content/uploads/2017/09/KETO-DIET-ALL-YOU-WANT-TO-KNOW.jpg'
+    df['image_url'] = image_dict[param]
     return df
 
 def diet_NYT():
     empty = pd.DataFrame()
-    for word in ['keto','ketogenic','paleo','vegan','vegetarian']:
+    for word in ['keto','ketogenic','paleo','paleolithic','vegan','vegetarian']:
         df = NYT_api_call_parameter_ALLTIME(word,0,nyt_api_key)
         empty = empty.append(df, sort=True)
         print('Pulled '+word)

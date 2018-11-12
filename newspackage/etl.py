@@ -173,8 +173,8 @@ def quick_search(parameter):
         # df.to_csv('Archive_CSV/current_search.csv')
         # print('Data Loaded!')
 
-def query_content(Limit, Medium, search_param):
-    all_objects = [content for content in session.query(Content).all() if content.medium.name == Medium if content.search_param == search_param]
+def query_content(Limit, Medium, Expertise, Max_Length, search_param):
+    all_objects = [content for content in session.query(Content).all() if content.medium.name == Medium if content.category.name in search_param if content.provider.expertise.type == Expertise if content.length < Max_Length]
     if len(all_objects) < 1:
         print('No Content')
     else:
@@ -183,7 +183,7 @@ def query_content(Limit, Medium, search_param):
                 title = all_objects[i].title
                 link = all_objects[i].content_url
                 image = all_objects[i].image_url
-                source_name = all_objects[i].provider.provider_name
+                source_name = all_objects[i].provider.name
                 display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
                 display(Image(url = image))
         elif Medium == 'video':
@@ -191,7 +191,7 @@ def query_content(Limit, Medium, search_param):
                 title = all_objects[i].title
                 link = all_objects[i].content_url
                 link = link[-11:]
-                source_name = all_objects[i].provider.provider_name
+                source_name = all_objects[i].provider.name
                 display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
                 display(HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+link+'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>'))
         else:
