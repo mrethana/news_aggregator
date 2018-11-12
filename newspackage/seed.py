@@ -11,6 +11,8 @@ new_content_objects = []
 all_medium_titles = {medium.name:medium for medium in session.query(Medium).all()}
 all_provider_titles = {provider.provider_name: provider for provider in session.query(Provider).all()}
 all_content_titles = {content.content_url: content for content in session.query(Content).all()}
+all_category_titles = {category.name: category for category in session.query(Category).all()}
+all_expertise_titles = {expertise.type: expertise for expertise in session.query(Expertise).all()}
 
 
 def find_or_create_medium(medium_name):
@@ -36,7 +38,7 @@ def find_or_create_provider(provider_name, newsapi_id):
         return object
 
 
-def find_or_create_content(dataframe):
+def find_or_create_expertise(dataframe):
     for index, row in dataframe.iterrows():
         if row.url in all_content_titles.keys():
             pass
