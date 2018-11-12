@@ -28,8 +28,8 @@ class Provider(Base):
     name = Column(String(100))
     api_id = Column(String(100))
     content = relationship('Content', back_populates = 'provider')
-    expertise_id = Column(Integer, ForeignKey('expertise.id'))
-    expertise = relationship('Expertise', back_populates = 'provider')
+    formality_id = Column(Integer, ForeignKey('formality.id'))
+    formality = relationship('Formality', back_populates = 'provider')
 
 class Category(Base):
     __tablename__ = 'categories'
@@ -43,11 +43,11 @@ class Category(Base):
 #     content_id = Column(Integer, ForeignKey('content.id'), primary_key = True)
 #     category_id = Column(Integer, ForeignKey('categories.id'), primary_key = True)
 
-class Expertise(Base):
-    __tablename__ = 'expertise'
+class Formality(Base):
+    __tablename__ = 'formality'
     id = Column(Integer, primary_key = True)
     type = Column(String(100))
-    provider = relationship('Provider', back_populates = 'expertise')
+    provider = relationship('Provider', back_populates = 'formality')
 
 class Medium(Base):
     __tablename__ = 'mediums'

@@ -173,8 +173,8 @@ def quick_search(parameter):
         # df.to_csv('Archive_CSV/current_search.csv')
         # print('Data Loaded!')
 
-def query_content(Limit, Medium, Expertise, Max_Length, search_param):
-    all_objects = [content for content in session.query(Content).all() if content.medium.name == Medium if content.category.name in search_param if content.provider.expertise.type == Expertise if content.length < Max_Length]
+def query_content(Limit, Medium, Formality, Max_Length, search_param):
+    all_objects = [content for content in session.query(Content).all() if content.medium.name == Medium if content.category.name in search_param if content.provider.formality.type == Formality if content.length < Max_Length]
     if len(all_objects) < 1:
         print('No Content')
     else:

@@ -32,7 +32,7 @@ def NYT_dropped_rows(df):
     df.pub_date = pd.to_datetime(df.pub_date).dt.date
     df.word_count = round(df.word_count / 150)
     df.document_type = 'text'
-    df['expertise'] = 'Intermediate'
+    df['formality'] = 'Intermediate'
     return df
 
 def NYT_dataframe_clean(df):

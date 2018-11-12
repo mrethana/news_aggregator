@@ -9,13 +9,13 @@ new_medium_objects = []
 new_provider_objects = []
 new_content_objects = []
 new_category_objects = []
-new_expertise_objects = []
+new_formality_objects = []
 
 all_medium_titles = {medium.name:medium for medium in session.query(Medium).all()}
 all_provider_titles = {provider.name: provider for provider in session.query(Provider).all()}
 all_content_titles = {content.content_url: content for content in session.query(Content).all()}
 all_category_titles = {category.name: category for category in session.query(Category).all()}
-all_expertise_titles = {expertise.type: expertise for expertise in session.query(Expertise).all()}
+all_formality_titles = {formality.type: formality for formality in session.query(Formality).all()}
 
 
 def find_or_create_medium(medium_name):
@@ -28,14 +28,14 @@ def find_or_create_medium(medium_name):
         all_medium_titles[medium_name] = object
         return object
 
-def find_or_create_expertise(expertise_name):
-    if expertise_name in all_expertise_titles.keys():
-        return all_expertise_titles[expertise_name]
+def find_or_create_formality(formality_name):
+    if formality_name in all_formality_titles.keys():
+        return all_formality_titles[formality_name]
     else:
-        name = expertise_name
-        object = Expertise(type = name)
-        new_expertise_objects.append(object)
-        all_expertise_titles[expertise_name] = object
+        name = formality_name
+        object = Formality(type = name)
+        new_formality_objects.append(object)
+        all_formality_titles[formality_name] = object
         return object
 
 def find_or_create_category(category_name):
@@ -48,13 +48,13 @@ def find_or_create_category(category_name):
         all_category_titles[category_name] = object
         return object
 
-def find_or_create_provider(provider_name, api_id, expertise_name):
+def find_or_create_provider(provider_name, api_id, formality_name):
     if provider_name in all_provider_titles.keys():
         return all_provider_titles[provider_name]
     else:
         name = provider_name
-        expertise = find_or_create_expertise(expertise_name)
-        object = Provider(name = name, api_id=api_id, expertise = expertise)
+        formality = find_or_create_formality(formality_name)
+        object = Provider(name = name, api_id=api_id, formality = formality)
         new_provider_objects.append(object)
         all_provider_titles[provider_name] = object
         return object
@@ -74,7 +74,7 @@ def find_or_create_content(dataframe):
             # param = row.search_term
             length = row.length
             medium = find_or_create_medium(row.medium)#Medium(name = 'text')
-            provider = find_or_create_provider(row.source, row.source_id, row.expertise) #Provider(provider_name = 'The New York Times', newsapi_id='the-new-york-times')
+            provider = find_or_create_provider(row.source, row.source_id, row.formality) #Provider(provider_name = 'The New York Times', newsapi_id='the-new-york-times')
             category = find_or_create_category(row.param)
             content_obj = Content(content_url=content_url, image_url=image_url, title=title, published = published,medium = medium,provider=provider, length = length, category = category)
             print(content_obj)
@@ -92,9 +92,9 @@ def add_provider_objects():
     for provider in new_provider_objects:
         session.add(provider)
         session.commit()
-def add_expertise_objects():
-    for expertise in new_expertise_objects:
-        session.add(expertise)
+def add_formality_objects():
+    for formality in new_formality_objects:
+        session.add(formality)
         session.commit()
 
 def add_category_objects():
