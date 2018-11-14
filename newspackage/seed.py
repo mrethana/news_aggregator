@@ -5,6 +5,9 @@ import time
 from __init__ import *
 from intermediate import *
 from social import *
+from youtube_data import *
+import warnings
+warnings.filterwarnings("ignore")
 
 new_medium_objects = []
 new_provider_objects = []
@@ -117,7 +120,9 @@ def add_content_objects():
 # tweets = twitter_api_call(twitter_handles)
 # find_or_create_content(tweets)
 
-
+print('Youtube Search...')
+videos = youtube_api_call(test_list)
+find_or_create_content(videos)
 
 add_medium_objects()
 add_provider_objects()

@@ -229,23 +229,21 @@ def plot_stacked(param):
     x = [medium.name for medium in session.query(Medium).all()]
     trace1 = go.Bar(
         x= x,
-        y=[count_formality_per_medium(x[0],'Informal',param)],
-#         y=[count_formality_per_medium(x[0],'Informal',param),count_formality_per_medium(x[1],'Informal',param),count_formality_per_medium(x[2],'Informal',param)],
-        name='Informal'
-    )
+        y=[count_formality_per_medium(x[0],'Informal',param),count_formality_per_medium(x[1],'Informal',param)],
+        # ,count_formality_per_medium(x[1],'Informal',param),count_formality_per_medium(x[2],'Informal',param)],
+        name='Informal')
+
     trace2 = go.Bar(
-       x= x,
-       y=[count_formality_per_medium(x[0],'Intermediate',param)],
+       x = x,
+       y=[count_formality_per_medium(x[0],'Intermediate',param),count_formality_per_medium(x[1],'Intermediate',param)],
 #         y=[count_formality_per_medium(x[0],'Intermediate',param),count_formality_per_medium(x[1],'Intermediate',param),count_formality_per_medium(x[2],'Intermediate',param)],
-        name='Intermediate'
-    )
+        name='Intermediate')
 
     trace3 = go.Bar(
-       x= x,
-        y=[count_formality_per_medium(x[0],'Formal',param)],
+        x = x,
+        y=[count_formality_per_medium(x[0],'Formal',param),count_formality_per_medium(x[1],'Formal',param)],
 #         y=[count_formality_per_medium(x[0],'Formal',param),count_formality_per_medium(x[1],'Formal',param),count_formality_per_medium(x[2],'Formal',param)],
-        name='Formal'
-    )
+        name='Formal')
 
     data = [trace1, trace2, trace3]
     layout = go.Layout(
