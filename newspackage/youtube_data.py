@@ -3,9 +3,10 @@ from apiclient.errors import HttpError
 from oauth2client.tools import argparser
 import pandas as pd
 import pprint
-import matplotlib.pyplot as pd
+from apikeys import *
 
-DEVELOPER_KEY = "AIzaSyAaNgP2we496MH8caRHTmGy4i02DjQkfMI"
+
+DEVELOPER_KEY = youtube_key
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
@@ -23,49 +24,37 @@ def youtube_search(q, max_results=50,order="relevance", token=None, location=Non
     location=location,
     locationRadius=location_radius).execute()
 
-    title = []
-    channelId = []
-    channelTitle = []
-    categoryId = []
-    videoId = []
-    viewCount = []
-    likeCount = []
-    dislikeCount = []
-    commentCount = []
-    favoriteCount = []
-    category = []
-    tags = []
-    videos = []
+    all_dicts = []
 
     for search_result in search_response.get("items", []):
         if search_result["id"]["kind"] == "youtube#video":
 
-            title.append(search_result['snippet']['title'])
+            title = (search_result['snippet']['title'])
 
-            videoId.append(search_result['id']['videoId'])
+            videoId = (search_result['id']['videoId'])
 
             response = youtube.videos().list(
             part='statistics, snippet',
             id=search_result['id']['videoId']).execute()
 
-            channelId.append(response['items'][0]['snippet']['channelId'])
-            channelTitle.append(response['items'][0]['snippet']['channelTitle'])
-            categoryId.append(response['items'][0]['snippet']['categoryId'])
-            favoriteCount.append(response['items'][0]['statistics']['favoriteCount'])
-            viewCount.append(response['items'][0]['statistics']['viewCount'])
-            likeCount.append(response['items'][0]['statistics']['likeCount'])
-            dislikeCount.append(response['items'][0]['statistics']['dislikeCount'])
+            channelId = (response['items'][0]['snippet']['channelId'])
+            channelTitle = (response['items'][0]['snippet']['channelTitle'])
+            categoryId = (response['items'][0]['snippet']['categoryId'])
+            favoriteCount = (response['items'][0]['statistics']['favoriteCount'])
+            viewCount = (response['items'][0]['statistics']['viewCount'])
+            likeCount = (response['items'][0]['statistics']['likeCount'])
+            dislikeCount = (response['items'][0]['statistics']['dislikeCount'])
 
         if 'commentCount' in response['items'][0]['statistics'].keys():
-            commentCount.append(response['items'][0]['statistics']['commentCount'])
+            commentCount = (response['items'][0]['statistics']['commentCount'])
         else:
-            commentCount.append([])
+            commentCount = []
 
         if 'tags' in response['items'][0]['snippet'].keys():
-            tags.append(response['items'][0]['snippet']['tags'])
+            tags = (response['items'][0]['snippet']['tags'])
         else:
-            tags.append([])
+            tags = []
 
-    youtube_dict = {'tags':tags,'channelId': channelId,'channelTitle': channelTitle,'categoryId':categoryId,'title':title,'videoId':videoId,'viewCount':viewCount,'likeCount':likeCount,'dislikeCount':dislikeCount,'commentCount':commentCount,'favoriteCount':favoriteCount}
-
-    return youtube_dict
+        youtube_dict = {'tags':tags,'channelId': channelId,'channelTitle': channelTitle,'categoryId':categoryId,'title':title,'videoId':videoId,'viewCount':viewCount,'likeCount':likeCount,'dislikeCount':dislikeCount,'commentCount':commentCount,'favoriteCount':favoriteCount}
+        all_dicts.append(youtube_dict)
+    return pd.DataFrame(all_dicts)
