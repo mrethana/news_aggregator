@@ -109,9 +109,9 @@ def add_content_objects():
         print(content)
         session.commit()
 
-# print('Diet search...')
-# diet = intermediate_search()
-# find_or_create_content(diet)
+print('Diet search...')
+diet = intermediate_search()
+find_or_create_content(diet)
 
 print('Tweets search...')
 tweets = twitter_api_call(twitter_handles)

@@ -10,6 +10,8 @@ import time
 from bs4 import BeautifulSoup
 import pandas as pd
 from IPython.core.display import HTML, Image
+import plotly.plotly as py
+import plotly.graph_objs as go
 
 
 sources_list = ['abc-news',
@@ -193,13 +195,17 @@ def query_content(Limit, Medium, Formality, Max_Length, search_param):
         print('No Content')
     else:
         if Medium == 'text':
-            for i in range (0, Limit):
-                title = all_objects[i].title
-                link = all_objects[i].content_url
-                image = all_objects[i].image_url
-                source_name = all_objects[i].provider.name
-                display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
-                display(Image(url = image))
+            if Formality != 'Informal':
+                for i in range (0, Limit):
+                    title = all_objects[i].title
+                    link = all_objects[i].content_url
+                    image = all_objects[i].image_url
+                    source_name = all_objects[i].provider.name
+                    display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
+                    display(Image(url = image))
+            else:
+                for i in range (0, Limit):
+                    display(Tweet(all_objects[i].content_url))
         elif Medium == 'video':
             for i in range (0, Limit):
                 title = all_objects[i].title
@@ -212,6 +218,37 @@ def query_content(Limit, Medium, Formality, Max_Length, search_param):
             for i in range (0, Limit):
                 link = all_objects[i].content_url
                 display(HTML("<iframe src="+"'"+link+"'"+ "style='width:100%; height:100px;' scrolling='no' frameborder='no'></iframe>"))
-        else:
-            for i in range (0, Limit):
-                display(Tweet(all_objects[i].content_url))
+
+
+def count_formality_per_medium(medium, formality, param):
+    return len([content for content in session.query(Content).all() if content.medium.name == medium if param in content.category.name if content.provider.formality.type == formality])
+
+def plot_stacked(param):
+    x = [medium.name for medium in session.query(Medium).all()]
+    trace1 = go.Bar(
+        x= x,
+        y=[count_formality_per_medium(x[0],'Informal',param)],
+#         y=[count_formality_per_medium(x[0],'Informal',param),count_formality_per_medium(x[1],'Informal',param),count_formality_per_medium(x[2],'Informal',param)],
+        name='Informal'
+    )
+    trace2 = go.Bar(
+       x= x,
+       y=[count_formality_per_medium(x[0],'Intermediate',param)],
+#         y=[count_formality_per_medium(x[0],'Intermediate',param),count_formality_per_medium(x[1],'Intermediate',param),count_formality_per_medium(x[2],'Intermediate',param)],
+        name='Intermediate'
+    )
+
+    trace3 = go.Bar(
+       x= x,
+        y=[count_formality_per_medium(x[0],'Formal',param)],
+#         y=[count_formality_per_medium(x[0],'Formal',param),count_formality_per_medium(x[1],'Formal',param),count_formality_per_medium(x[2],'Formal',param)],
+        name='Formal'
+    )
+
+    data = [trace1, trace2, trace3]
+    layout = go.Layout(
+        barmode='stack'
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+    return py.iplot(fig, filename='plot from API (20)')
