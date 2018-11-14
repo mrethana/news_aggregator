@@ -175,6 +175,7 @@ def quick_search(parameter):
         # df.to_csv('Archive_CSV/current_search.csv')
         # print('Data Loaded!')
 
+#call Twitter embed API to embed tweet in  dashboard
 class Tweet(object):
     def __init__(self, s, embed_str=False):
         if not embed_str:
@@ -223,6 +224,7 @@ def query_content(Limit, Medium, Formality, Max_Length, search_param):
 def count_formality_per_medium(medium, formality, param):
     return len([content for content in session.query(Content).all() if content.medium.name == medium if param in content.category.name if content.provider.formality.type == formality])
 
+#plot stacked bar in dashboard
 def plot_stacked(param):
     x = [medium.name for medium in session.query(Medium).all()]
     trace1 = go.Bar(

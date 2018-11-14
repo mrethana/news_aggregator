@@ -10,8 +10,10 @@ import datetime
 from datetime import date
 from apikeys import *
 
+#dates to use for API call
 today = int(str(date.today()).replace('-',''))
 last_week = int(str(date.today() - datetime.timedelta(days = 14)).replace('-',''))
+#images per category
 image_dict = {'keto': 'https://theindianspot.com/wp-content/uploads/2017/09/KETO-DIET-ALL-YOU-WANT-TO-KNOW.jpg',
              'ketogenic': 'https://theindianspot.com/wp-content/uploads/2017/09/KETO-DIET-ALL-YOU-WANT-TO-KNOW.jpg',
              'paleo': 'https://images.agoramedia.com/everydayhealth/gcms/Can-the-Paleo-Diet-Help-Diabetes-1440x810.jpg',
@@ -19,6 +21,7 @@ image_dict = {'keto': 'https://theindianspot.com/wp-content/uploads/2017/09/KETO
              'vegan': 'https://familydoctor.org/wp-content/uploads/2011/09/shutterstock_413417941-705x468.jpg',
              'vegetarian': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQo-azo8tn-BcljdjG3wp5Oub2vmC3OvDJ2-EXIhxB5dG3EJAq-'}
 
+#clean the response from NYT API
 def NYT_title_clean(df):
     titles = []
     for index, row in df.iterrows():
