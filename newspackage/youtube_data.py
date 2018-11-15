@@ -21,9 +21,9 @@ youtube_searches = ['@Dr.DonColbert', '@StephandAdam', '@NicholaLudlam-Raine', '
  '@CookingChannel', 'RecipeswithMelissaClark', '@FineCooking', '@HomeCookingShow', '@CookingPanda', '@FODMAPEveryday', '@FODMAPLife', '@FODMAPPEDFOODS', '@SimplyGlutenFreebyCarolKicinski', '@SIBOSolution(Dr.MelanieKeller)', '@ManjulasKitchen', '@VegetarianTimes', '@Tasty', '@SeaShepherd', '@GreenHealthyCooking', '@CookingLight', '@EatingWellMagazine', '@HealthyRecipes', '@PaleolithicDiet', '@PaleoMagazine',
  '@PaleoHacks', '@PaleoGrubs', '@nutritionstripped', '@WomensHealthMag', '@MensHealthMag', '@MensFitnessUS', '@skinnytaste', '@thugkitchen', '@PrecisionNutrition', '@UC5BpcDICcOLVFVmVNLRXM8w', '@rebootedbody', '@EverydayHealth', '@TheNewYorkTimes']
 
-test_list = youtube_searches[:20]
 
-def youtube_search(q, max_results=5,order="date", token=None, location=None, location_radius=None):
+
+def youtube_search(q, max_results=50,order="date", token=None, location=None, location_radius=None):
 
     youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,developerKey=DEVELOPER_KEY)
 
@@ -104,10 +104,14 @@ def add_category(df):
 
 def youtube_api_call(list_accounts):
     empty_df = pd.DataFrame()
+    errors = []
     for account in list_accounts:
-        print(account)
-        df = youtube_search(account)
-        df = add_length(df)
-        df = add_category(df)
-        empty_df = empty_df.append(df, sort=True)
-    return empty_df
+        try:
+            print(account)
+            df = youtube_search(account)
+            df = add_length(df)
+            df = add_category(df)
+            empty_df = empty_df.append(df, sort=True)
+        except:
+            errors.append(account)
+    return empty_df, errors

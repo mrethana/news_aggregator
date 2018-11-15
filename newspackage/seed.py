@@ -121,8 +121,9 @@ def add_content_objects():
 # find_or_create_content(tweets)
 
 print('Youtube Search...')
-videos = youtube_api_call(test_list)
+videos, errors = youtube_api_call(youtube_searches)
 find_or_create_content(videos)
+errors
 
 add_medium_objects()
 add_provider_objects()
