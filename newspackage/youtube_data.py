@@ -107,11 +107,11 @@ def youtube_api_call(list_accounts):
     errors = []
     for account in list_accounts:
         try:
-            print(account)
             df = youtube_search(account)
             df = add_length(df)
             df = add_category(df)
             empty_df = empty_df.append(df, sort=True)
+            print(account)
         except:
             errors.append(account)
     return empty_df, errors
