@@ -17,13 +17,20 @@ api = tweepy.API(auth)
 # '@naturalgourmet', '@Low_Carb_Keto', '@NutritionTwins', '@mckelhill', '@WomensFitnessAu', '@WomensHealthMag', '@MensHealthMag', '@mjfit', '@thugkitchen', '@Leslie_Klenke', '@insidePN', '@ThisMamaCooks', '@EdibleWildFood', '@TheEarthDieter', '@HarvardHealth', '@EverydayHealth', '@DailyHealthTips']
 
 #clean response from twitter
-def clean_tweets(data):
+
+def clean_tweets(data, categories):
     tweets = []
     for tweet in data:
         try:
             hashtag = tweet.entities['hashtags'][0]['text']
+            tags = list(pd.DataFrame(tweet.entities['hashtags']).text)
+            intersect = list(set(tags).intersection(categories))
+            if len(intersect) > 0:
+                hashtag = intersect[0]
+            else:
+                hashtag = hashtag
         except IndexError:
-            hashtag = 'unknown'
+            hashtag = 'general'
         tweets = [{'title':tweet.id, 'date':tweet.created_at.date().strftime('%Y-%m-%d'),
            'description': tweet.text, 'source':tweet.user.screen_name,'source_id':tweet.user.id_str,
            'formality': 'Informal'
@@ -31,28 +38,11 @@ def clean_tweets(data):
     tweets = pd.DataFrame(tweets)
     return tweets
 
-def add_category(df, categories):
-    # cats = ['keto','ketogenic','paleo','paleolithic','vegan','vegetarian']
-    all_params = []
-    for index, row in df.iterrows():
-        try:
-            intersect = list(set(row.tags).intersection(categories))
-            if len(intersect) > 0:
-                category = intersect[0]
-            else:
-                category = row.tags[0]
-        except:
-            category = 'none'
-        all_params.append(category)
-    df['param'] = all_params
-    return df
-
-
-#call api
-def twitter_api_call(list_handles):
+#CALL API
+def twitter_api_call(list_handles, categories):
     empty = pd.DataFrame()
     for handle in list_handles:
-        user_tweets = pd.DataFrame(clean_tweets(api.user_timeline(handle)))
+        user_tweets = pd.DataFrame(clean_tweets(api.user_timeline(handle), categories))
         empty = empty.append(user_tweets, sort=True)
         print(handle)
     empty.title = empty.title.astype('str')
