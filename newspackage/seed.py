@@ -7,6 +7,7 @@ from intermediate import *
 from social import *
 from youtube_data import *
 import warnings
+from info import *
 warnings.filterwarnings("ignore")
 
 new_medium_objects = []
@@ -112,16 +113,16 @@ def add_content_objects():
         print(content)
         session.commit()
 
-# print('Diet search...')
-# diet = intermediate_search()
-# find_or_create_content(diet)
+print('Intermediate text search...')
+diet = intermediate_search(nutrition_cats)
+find_or_create_content(diet)
 #
-print('Tweets search...')
-tweets = twitter_api_call(twitter_handles)
-find_or_create_content(tweets)
+# print('Tweets search...')
+# tweets = twitter_api_call(twitter_handles)
+# find_or_create_content(tweets)
 
 # print('Youtube Search...')
-# videos, errors = youtube_api_call(youtube_searches)
+# videos, errors = youtube_api_call(youtube_searches, nutrition_cats)
 # find_or_create_content(videos)
 
 add_medium_objects()

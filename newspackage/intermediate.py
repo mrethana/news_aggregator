@@ -9,18 +9,13 @@ import requests
 import datetime
 from datetime import date
 from apikeys import *
+from info import *
 
 #dates to use for API call
 today = int(str(date.today()).replace('-',''))
 last_week = int(str(date.today() - datetime.timedelta(days = 14)).replace('-',''))
-#images per category
-image_dict = {'keto': 'https://theindianspot.com/wp-content/uploads/2017/09/KETO-DIET-ALL-YOU-WANT-TO-KNOW.jpg',
-             'ketogenic': 'https://theindianspot.com/wp-content/uploads/2017/09/KETO-DIET-ALL-YOU-WANT-TO-KNOW.jpg',
-             'paleo': 'https://images.agoramedia.com/everydayhealth/gcms/Can-the-Paleo-Diet-Help-Diabetes-1440x810.jpg',
-            'paleolithic': 'https://images.agoramedia.com/everydayhealth/gcms/Can-the-Paleo-Diet-Help-Diabetes-1440x810.jpg',
-             'vegan': 'https://familydoctor.org/wp-content/uploads/2011/09/shutterstock_413417941-705x468.jpg',
-             'vegetarian': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQo-azo8tn-BcljdjG3wp5Oub2vmC3OvDJ2-EXIhxB5dG3EJAq-'}
 
+#NEW YORK TIMES
 #clean the response from NYT API
 def NYT_title_clean(df):
     titles = []
@@ -31,7 +26,6 @@ def NYT_title_clean(df):
     return df
 
 def NYT_dropped_rows(df):
-    df = df.drop(['blog','byline','headline','keywords','multimedia','news_desk','print_page','score','type_of_material','uri'],axis =1)
     df.pub_date = pd.to_datetime(df.pub_date).dt.date
     df.word_count = round(df.word_count / 150)
     df.document_type = 'text'
@@ -60,31 +54,80 @@ def NYT_api_call_parameter_ALLTIME(param, page, key):
     df = pd.DataFrame(data['response']['docs'])
     df = NYT_dataframe_clean(df)
     df['param'] = param
-    df['image_url'] = image_dict[param]
+    df['image_url'] = 'https://greaterbostonhcs.com/wp-content/uploads/2016/05/Nutrition.jpg'
     return df
 
-def diet_NYT():
+def NYT_pull(categories):
     empty = pd.DataFrame()
-    for word in ['keto','ketogenic','paleo','paleolithic','vegan','vegetarian']:
-        df = NYT_api_call_parameter_ALLTIME(word,0,nyt_api_key)
-        empty = empty.append(df, sort=True)
-        print('Pulled '+word)
-        time.sleep(2)
+    for word in categories:
+        try:
+            df = NYT_api_call_parameter_ALLTIME(word,0,nyt_api_key)
+            empty = empty.append(df, sort=True)
+            print('Pulled '+word)
+            time.sleep(2)
+        except:
+            print(word + " EXCEPTION!!!!")
     empty = empty.drop(['abstract','section_name'],axis = 1)
     empty = empty.rename(index=str, columns={"_id": "source_id", "document_type": "medium",'pub_date':'date','snippet':'description','word_count':'length'})
     return empty
 
-# def general_health():
-#     empty = pd.DataFrame()
-#     for page in [0,1]:
-#         df = NYT_api_call_section_based('Health', 'The New York Times',page, last_week, today, nyt_api_key)
-#         empty = empty.append(df)
-#         time.sleep(2)
-#     return empty
+#NEWSAPI
 
-def intermediate_search():
-    # df1 = general_health()
-    df2 = diet_NYT()
-    # frames = [df1,df2]
-    # result = pd.concat(frames)
-    return df2 #result
+def rename_columns(df):
+    df = df.rename(index=str, columns={'publishedAt':'date','url':'web_url','urlToImage':'image_url'})
+    return df
+
+def add_words(df):
+    lengths = []
+    for string in df.content:
+        try:
+            lengths.append(round(int(string[string.find('+')+1:string.find(' chars')]) / 4 / 250))
+        except:
+            lengths.append(4)
+    return lengths
+
+def split_source_info(list_of_dicts):
+    for item in list_of_dicts:
+        item['source_id'] = item['source']['id']
+        item['source'] = item['source']['name']
+
+def pull_articles(parameter):
+    try:
+        article_results_rel = newsapi.get_everything(q=parameter,sort_by = 'relevancy',language='en', page_size=50, sources=sources_joined)
+        article_results_rel = article_results_rel['articles']
+        print(parameter + ' PULLED!!!')
+    except:
+        article_results_rel = pd.DataFrame()
+        print(parameter + ' EXCEPTION!!!!')
+    return article_results_rel
+
+def clean_articles(parameter):
+    try:
+        consolidated = pull_articles(parameter)
+        split_source_info(consolidated)
+        df = pd.DataFrame(consolidated)
+        df['medium'] = 'text'
+        df['param'] = parameter
+        df['publishedAt'] = df['publishedAt'].apply(lambda x: pd.to_datetime(x).date().strftime('%Y-%m-%d'))
+        df['formality'] = 'Intermediate'
+        df['length'] = add_words(df)
+        return rename_columns(df)
+    except:
+        pass
+
+def call_news_api(categories):
+    empty_df = pd.DataFrame()
+    for category in categories:
+        empty_df.append(clean_articles(category), sort=True)
+        print(category)
+    return empty_df
+
+
+def intermediate_search(categories):
+    print('News API')
+    df1 = call_news_api(categories)
+    print("NYT API")
+    df2 = NYT_pull(categories)
+    frames = [df1,df2]
+    result = pd.concat(frames)
+    return result
