@@ -114,8 +114,12 @@ def add_content_objects():
         session.commit()
 
 print('Intermediate text search...')
-diet = intermediate_search(nutrition_cats)
-find_or_create_content(diet)
+print('News API')
+NAPI = call_news_api(nutrition_cats)
+find_or_create_content(NAPI)
+# print("NYT API")
+# NYTAPI = NYT_pull(nutrition_cats)
+# find_or_create_content(NYTAPI)
 #
 # print('Tweets search...')
 # tweets = twitter_api_call(twitter_handles)

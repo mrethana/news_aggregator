@@ -92,42 +92,34 @@ def split_source_info(list_of_dicts):
         item['source'] = item['source']['name']
 
 def pull_articles(parameter):
-    try:
-        article_results_rel = newsapi.get_everything(q=parameter,sort_by = 'relevancy',language='en', page_size=50, sources=sources_joined)
-        article_results_rel = article_results_rel['articles']
-        print(parameter + ' PULLED!!!')
-    except:
-        article_results_rel = pd.DataFrame()
-        print(parameter + ' EXCEPTION!!!!')
+    article_results_rel = newsapi.get_everything(q=parameter,sort_by = 'relevancy',language='en', page_size=10, sources=sources_joined)
+    article_results_rel = article_results_rel['articles']
+    split_source_info(article_results_rel)
     return article_results_rel
 
-def clean_articles(parameter):
+def clean_articles(list_of_dicts, search_param):
+    df = pd.DataFrame(list_of_dicts)
     try:
-        consolidated = pull_articles(parameter)
-        split_source_info(consolidated)
-        df = pd.DataFrame(consolidated)
         df['medium'] = 'text'
-        df['param'] = parameter
+        df['param'] = search_param
         df['publishedAt'] = df['publishedAt'].apply(lambda x: pd.to_datetime(x).date().strftime('%Y-%m-%d'))
         df['formality'] = 'Intermediate'
         df['length'] = add_words(df)
-        return rename_columns(df)
+        df = rename_columns(df)
+        print(search_param)
     except:
         pass
+    return df
+
 
 def call_news_api(categories):
     empty_df = pd.DataFrame()
     for category in categories:
-        empty_df.append(clean_articles(category), sort=True)
-        print(category)
+        dicts = pull_articles(category)
+        df = clean_articles(dicts, category)
+        try:
+            empty_df = empty_df.append(df, sort=True)
+        except:
+            pass
+        print(len(empty_df.index))
     return empty_df
-
-
-def intermediate_search(categories):
-    print('News API')
-    df1 = call_news_api(categories)
-    print("NYT API")
-    df2 = NYT_pull(categories)
-    frames = [df1,df2]
-    result = pd.concat(frames)
-    return result
