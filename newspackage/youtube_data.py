@@ -13,16 +13,19 @@ from info import *
 DEVELOPER_KEY = youtube_key
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
-# youtube_searches = ['@Dr.DonColbert', '@StephandAdam', '@NicholaLudlam-Raine', '@RachelAust', '@TheDietKitchen', '@SweetPotatoSoul', '@TheLeanMachines', '@CarlyRowena', '@HighCarbHannah', '@ColleenPatrick-Goudreau', '@ActiveVegetarian', '@VegetarianZen', '@ATPScience', '@WillCole', '@JimmyMoore', '@KetoForWomenShow', '@TheKetoDiet-HealthfulPursuit', '@TomBilyeu', '@PrimalBlueprint'
-# , '@DishingUpNutrition', '@PatrickHolford', '@realfoodforager', '@HolisticWellnessProject', '@CenterforNutritionStudies', '@DoctorOz', '@Clean&Delicious', '@MingleSeasoning', '@CleanFoodDirtyCity', '@MeowMeix', '@SproutedKitchen', '@MyNewRoots', '@AmeliaFreer', '@KatieLolas', '@caligirlgetsfit', '@KetoKarma', '@ohmyketo', '@GreenKitchenStories', '@MaxLugavere', '@2KetoDudes'
-# , '@DianeSanfilippo', '@Bulletproof', '@Dr.EricBergDC', '@NimaiDelgado', '@Dr.AnthonyGustin', '@MattFrazier', '@TheHealthyGut', '@MelanieAvalon', '@TheSIBODoctor', '@MarniWasserman', '@TheUltimateHealthPodcast', '@SeanCroxton', '@WellnessForce', '@AndyGalpin', '@OhSheGlows', '@FullyRawKristina', '@HEMSLEY+HEMSLEY', '@AbelJames', '@HealthiNation', '@FitMenCook'
-# , '@DeliciouslyElla', '@KimberlySnyder', '@Whole30®', '@MarkHyman,MD', '@doctorjoshaxe', '@JordanSyatt', '@TrentMcCloskey', '@CarterGood', '@RussCrandall', '@PatriciaBannan,RDN', '@EaStewart', '@DreenaBurton', '@DietitianCassie', '@DanielleOmar', '@DanChurchill', '@alexandracaspero', '@TheAtlantic', '@CandiceKumai', '@RobbWolf', '@AubreyMarcus'
-# , '@PeterAttia,MD', '@JoelKahn', '@biolayne', '@FoundMyFitness', '@ChrisKresser,L.Ac', '@PowerfulJRE', '@fourhourchef', '@TimFerriss', '@TheShawnModel', '@BenGreenfieldFitness', '@jorgecruise', '@Dr.Gundry', '@Alannmd', '@DrAnnLouise', '@mercola', '@drfuhrman', '@nomnompaleo', '@MariaEmmerich', '@JamieOliver', '@ThePaleoMom'
-# , '@NativePath', '@TheSugarfreemom', '@CookingKetoWithKristie', '@TheFoodbabe', '@katiewellnessmama', '@Waitrose&Partners', '@VeganRecipes', '@Onnit', '@TheVegetarianSociety', '@ShamayimVAretzInstitute', '@TheVeganSociety', '@TheGutStuff', '@PaleoFX', '@CavemanKeto', '@KetoConnect', '@USDA', '@FoodRevolutionNetwork', '@CSPITV', '@SimplyRecipes', '@FoodNetwork',
-#  '@CookingChannel', 'RecipeswithMelissaClark', '@FineCooking', '@HomeCookingShow', '@CookingPanda', '@FODMAPEveryday', '@FODMAPLife', '@FODMAPPEDFOODS', '@SimplyGlutenFreebyCarolKicinski', '@SIBOSolution(Dr.MelanieKeller)', '@ManjulasKitchen', '@VegetarianTimes', '@Tasty', '@SeaShepherd', '@GreenHealthyCooking', '@CookingLight', '@EatingWellMagazine', '@HealthyRecipes', '@PaleolithicDiet', '@PaleoMagazine',
-#  '@PaleoHacks', '@PaleoGrubs', '@nutritionstripped', '@WomensHealthMag', '@MensHealthMag', '@MensFitnessUS', '@skinnytaste', '@thugkitchen', '@PrecisionNutrition', '@UC5BpcDICcOLVFVmVNLRXM8w', '@rebootedbody', '@EverydayHealth', '@TheNewYorkTimes']
 
 
+def clean_youtube_time(string):
+    if 'H' in string:
+        minutes = int(string[string.find('H')+1:string.find('M')])
+        hours = int(string[string.find('T')+1:string.find('H')]) * 60
+        time = minutes + hours
+    else:
+        if 'M' in string:
+            time = int(string[string.find('T')+1:string.find('M')])
+        else:
+            time = 1
+    return time
 
 def youtube_search(q, max_results=10,order="date", token=None, location=None, location_radius=None):
 
@@ -48,7 +51,7 @@ def youtube_search(q, max_results=10,order="date", token=None, location=None, lo
             videoId = (search_result['id']['videoId'])
 
             response = youtube.videos().list(
-            part='statistics, snippet',
+            part='statistics, snippet, contentDetails',
             id=search_result['id']['videoId']).execute()
 
             channelId = (response['items'][0]['snippet']['channelId'])
@@ -60,6 +63,7 @@ def youtube_search(q, max_results=10,order="date", token=None, location=None, lo
             description = response['items'][0]['snippet']['localized']['description']
             url = 'https://www.youtube.com/watch?v='+videoId
             image_url = response['items'][0]['snippet']['thumbnails']['default']['url']
+            length = clean_youtube_time(response['items'][0]['contentDetails']['duration'])
 
         if 'commentCount' in response['items'][0]['statistics'].keys():
             commentCount = (response['items'][0]['statistics']['commentCount'])
@@ -72,20 +76,9 @@ def youtube_search(q, max_results=10,order="date", token=None, location=None, lo
             tags = []
 
         youtube_dict = {'tags':tags,'source_id': channelId,'source': channelTitle,'categoryId':categoryId,'title':title,'videoId':videoId,'viewCount':viewCount,'commentCount':commentCount,'favoriteCount':favoriteCount,
-                        'formality':'Intermediate', 'medium':'video','date':date, 'description': description, 'web_url':url, 'image_url':image_url}
+                        'formality':'Intermediate', 'medium':'video','date':date, 'description': description, 'web_url':url, 'image_url':image_url, 'length':length}
         all_dicts.append(youtube_dict)
     return pd.DataFrame(all_dicts)
-
-def add_length(df):
-    all_lengths = []
-    for index, row in df.iterrows():
-        try:
-            length = round(pafy.new(row.web_url).length / 60)
-        except:
-            length = 2
-        all_lengths.append(length)
-    df['length'] = all_lengths
-    return df
 
 def add_category(df, categories):
     # cats = ['keto','ketogenic','paleo','paleolithic','vegan','vegetarian']
@@ -109,10 +102,9 @@ def youtube_api_call(list_accounts, categories):
     for account in list_accounts:
         try:
             df = youtube_search(account)
-            df = add_length(df)
             df = add_category(df, categories)
             empty_df = empty_df.append(df, sort=True)
             print(account)
         except:
-            errors.append(account)
-    return empty_df, errors
+            print(account + " EXCEPTION!!!!")
+    return empty_df

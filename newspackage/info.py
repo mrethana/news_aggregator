@@ -14,7 +14,7 @@ youtube_searches = ['@Dr.DonColbert', '@StephandAdam', '@NicholaLudlam-Raine', '
  '@PaleoHacks', '@PaleoGrubs', '@nutritionstripped', '@WomensHealthMag', '@MensHealthMag', '@MensFitnessUS', '@skinnytaste', '@thugkitchen', '@PrecisionNutrition', '@UC5BpcDICcOLVFVmVNLRXM8w', '@rebootedbody', '@EverydayHealth', '@TheNewYorkTimes']
 
 
-nutrition_cats = ['keto',  'mct', 'natural', 'corn-fed', 'cruciferous',
+nutrition_cats = ['keto',  'mct', 'natural', 'corn-fed', 'cruciferous','paleolithic',
 'vegetable', 'cooking', 'factory', 'fat', 'free', 'anti-biotic', 'grass-fed', 'gluten', 'vegan', 'vegetarian'
 ,'paleo', 'ketogenic', 'leaky gut', 'meal prep', 'micronutrient', 'macronutrient', 'pressure cooked carbs', 'sprouted carbs', 'mct oil', 'coconut oil', 'lean protein', 'fat on nutrion label', 'cholestrol', 'natural sugars', 'diabetes', 'brain fog', 'sourdough', 'bcaas', 'essential amino acids'
 , 'wild fish', 'farm raised fish', 'corn-fed beef', 'wild game', 'bioavailability', 'amino acids', 'meat', 'grains', 'vitamins', 'supplements', 'sprouts', 'beans', 'legumes', 'lectins', 'night shade', 'auto-immune', 'hormone', 'gluconeogenesis', 'bad fat', 'good fat'
