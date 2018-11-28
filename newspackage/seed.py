@@ -8,6 +8,7 @@ from social import *
 from youtube_data import *
 import warnings
 from info import *
+from itunes import *
 warnings.filterwarnings("ignore")
 
 new_medium_objects = []
@@ -124,11 +125,17 @@ def add_content_objects():
 # print('Tweets search...')
 # tweets = twitter_api_call(twitter_handles, nutrition_cats)
 # find_or_create_content(tweets)
-
+#
 # print('Youtube Search...')
 # videos = youtube_api_call(youtube_searches, nutrition_cats)
 # find_or_create_content(videos)
 
+print('Podcast Search...')
+podcasts = call_podcast_api(podcast_names, nutrition_cats)
+find_or_create_content(podcasts)
+
 add_medium_objects()
 add_provider_objects()
 add_content_objects()
+add_category_objects()
+add_formality_objects()
