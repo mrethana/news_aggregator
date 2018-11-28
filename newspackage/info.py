@@ -28,7 +28,6 @@ podcast_names = ['https://www.bodyscience.com.au/podcast/' ,'https://www.onnit.c
 ,'https://www.probioticlife.net/episodes/' ,'https://www.thesibodoctor.com/sibo-doctor-podcasts/?v=7516fd43adaa' ,'The Ultimate Health Podcast' ,'Underground Wellness Radio' ,'Wellness Force Radio' ,'Live.Life.Better.' ,'The Fat-Burning Man Show' ,'Deliciously Ella: The Podcast' ,'feel good podcast with kimberly snyder' ,'Beauty Inside Out with Kimberly Snyder' ,"Kimberly Snyder's Podcast" ,'House Call With Dr. Hyman' ,"The Doctor's Farmacy with Mark Hyman, M.D." ,'Wabi Sabi - The Perfectly Imperfect Podcast with Candice Kumai' ,'The Paleo Solution' ,'Aubrey Marcus Podcast' ,'The Peter Attia Drive' ,'Heart Doc VIP with Dr. Joel Kahn' ,'https://www.biolayne.com/media/podcasts/' ,'FoundMyFitness'
 ,'Revolution Health Radio' ,'The Joe Rogan Experience' ,'The Tim Ferriss Show' ,'The Model Health Show' ,'Ben Greenfield Fitness' ,'https://www.stitcher.com/podcast/the-dr-gundry-podcast' ,'https://drhoffman.com/listen/weekly-radio-show-podcast/' ,'Intelligent Medicine' ,"Dr. Joseph Mercola's Natural Health Articles" ,'Take Control of Your Health with Dr. Mercola' ,'Nom Nom Paleo Podcast' ,'The Wellness Mama Podcast']
 
-podcast_names2 = ['Revolution Health Radio' ,'The Joe Rogan Experience' ,'The Tim Ferriss Show']
 
 sources_list = ['abc-news',
  'associated-press',

@@ -57,7 +57,7 @@ class Tweet(object):
         return self.text
 
 def query_content(Limit, Medium, Formality, Max_Length, search_param):
-    all_objects = [content for content in session.query(Content).order_by(desc(Content.published)).all() if content.medium.name == Medium if search_param in content.category.name if content.provider.formality.type == Formality if int(content.length) < Max_Length]
+    all_objects = [content for content in session.query(Content).order_by(desc(Content.published)).all() if content.medium.name == Medium if search_param in content.category.name if content.provider.formality.type == Formality if content.length < Max_Length]
     if len(all_objects) < 1:
         print('No Content')
     else:
@@ -87,7 +87,6 @@ def query_content(Limit, Medium, Formality, Max_Length, search_param):
                 source_name = all_objects[i].provider.name
                 link = all_objects[i].content_url
                 display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
-                IPython.display.Audio(link)
                 # display(HTML("<iframe src="+"'"+link+"'"+ "style='width:100%; height:100px;' scrolling='no' frameborder='no'></iframe>"))
 
 
@@ -99,19 +98,19 @@ def plot_stacked(param):
     x = [medium.name for medium in session.query(Medium).all()]
     trace1 = go.Bar(
         x= x,
-        y=[count_formality_per_medium(x[0],'Informal',param),count_formality_per_medium(x[1],'Informal',param),count_formality_per_medium(x[3],'Informal',param)],
+        y=[count_formality_per_medium(x[0],'Informal',param),count_formality_per_medium(x[1],'Informal',param),count_formality_per_medium(x[2],'Informal',param)],
         # ,count_formality_per_medium(x[1],'Informal',param),count_formality_per_medium(x[2],'Informal',param)],
         name='Informal')
 
     trace2 = go.Bar(
        x = x,
-       y=[count_formality_per_medium(x[0],'Intermediate',param),count_formality_per_medium(x[1],'Intermediate',param),count_formality_per_medium(x[3],'Intermediate',param)],
+       y=[count_formality_per_medium(x[0],'Intermediate',param),count_formality_per_medium(x[1],'Intermediate',param),count_formality_per_medium(x[2],'Intermediate',param)],
 #         y=[count_formality_per_medium(x[0],'Intermediate',param),count_formality_per_medium(x[1],'Intermediate',param),count_formality_per_medium(x[2],'Intermediate',param)],
         name='Intermediate')
 
     trace3 = go.Bar(
         x = x,
-        y=[count_formality_per_medium(x[0],'Formal',param),count_formality_per_medium(x[1],'Formal',param),count_formality_per_medium(x[3],'Formal',param)],
+        y=[count_formality_per_medium(x[0],'Formal',param),count_formality_per_medium(x[1],'Formal',param),count_formality_per_medium(x[2],'Formal',param)],
 #         y=[count_formality_per_medium(x[0],'Formal',param),count_formality_per_medium(x[1],'Formal',param),count_formality_per_medium(x[2],'Formal',param)],
         name='Formal')
 
