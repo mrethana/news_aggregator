@@ -91,7 +91,7 @@ def add_category(df, categories):
             else:
                 category = row.tags[0]
         except:
-            category = 'none'
+            category = 'general'
         all_params.append(category)
     df['param'] = all_params
     return df

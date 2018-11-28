@@ -125,9 +125,9 @@ def add_content_objects():
 # tweets = twitter_api_call(twitter_handles, nutrition_cats)
 # find_or_create_content(tweets)
 
-print('Youtube Search...')
-videos = youtube_api_call(youtube_searches, nutrition_cats)
-find_or_create_content(videos)
+# print('Youtube Search...')
+# videos = youtube_api_call(youtube_searches, nutrition_cats)
+# find_or_create_content(videos)
 
 add_medium_objects()
 add_provider_objects()
