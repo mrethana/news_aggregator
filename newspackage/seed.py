@@ -129,9 +129,9 @@ def add_content_objects():
 # print('Youtube Search...')
 # videos = youtube_api_call(youtube_searches, nutrition_cats)
 # find_or_create_content(videos)
-
+podcast_names2 = ['Revolution Health Radio' ,'The Joe Rogan Experience' ,'The Tim Ferriss Show']
 print('Podcast Search...')
-podcasts = call_podcast_api(podcast_names, nutrition_cats)
+podcasts = call_podcast_api(nutrition_cats, podcast_names2)
 find_or_create_content(podcasts)
 
 add_medium_objects()

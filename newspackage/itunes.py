@@ -3,6 +3,7 @@ import json
 import feedparser
 import pandas as pd
 import re
+import time
 
 
 def feed_urls(search_words, media_value='podcast', entity_value='podcast'):
@@ -23,6 +24,12 @@ def feed_urls(search_words, media_value='podcast', entity_value='podcast'):
         feed_url = "None"
     return feed_url
 
+def fix_podcast_length(time):
+    hours = int(time[0:2]) * 60
+    minutes = int(time[4:5])
+    length = hours + minutes
+    return length
+
 def df_podcast_episodes(feed_url):
     print(feed_url)
     if(len(feed_url) > 0):
@@ -32,7 +39,7 @@ def df_podcast_episodes(feed_url):
             info = dict()
             info['title'] = episode['title'] if 'title' in episode else ''
             info['description']= episode['summary'] if 'summary' in episode else ''
-            info['length']= episode['itunes_duration'] if 'itunes_duration' in episode else ''
+            info['length']= fix_podcast_length(episode['itunes_duration']) if 'itunes_duration' in episode else 1
             info['date']= pd.to_datetime(episode['published']).date().strftime('%Y-%m-%d') if 'published' in episode else ''
             info['medium'] = 'audio'
             info['formality'] = 'Intermediate'
@@ -71,8 +78,14 @@ def call_podcast_api(categories, podcasts):
         if podcast == 'None':
             pass
         else:
-            url = feed_urls(podcast)
-            df = df_podcast_episodes(url)
-            df = add_category_to_audio(df, categories)
-            empty = empty.append(df, sort=True)
+            try:
+                url = feed_urls(podcast)
+                df = df_podcast_episodes(url)
+                df = add_category_to_audio(df, categories)
+                empty = empty.append(df, sort=True)
+                print('SUCCESS!')
+                time.sleep(2)
+            except:
+                print('EXCEPTION')
+                time.sleep(2)
     return empty

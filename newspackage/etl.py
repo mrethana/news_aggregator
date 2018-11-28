@@ -12,6 +12,7 @@ from IPython.core.display import HTML, Image
 import plotly.plotly as py
 import plotly.graph_objs as go
 from info import *
+import IPython
 
 
 
@@ -56,7 +57,7 @@ class Tweet(object):
         return self.text
 
 def query_content(Limit, Medium, Formality, Max_Length, search_param):
-    all_objects = [content for content in session.query(Content).order_by(desc(Content.published)).all() if content.medium.name == Medium if search_param in content.category.name if content.provider.formality.type == Formality if content.length < Max_Length]
+    all_objects = [content for content in session.query(Content).order_by(desc(Content.published)).all() if content.medium.name == Medium if search_param in content.category.name if content.provider.formality.type == Formality if int(content.length) < Max_Length]
     if len(all_objects) < 1:
         print('No Content')
     else:
@@ -82,8 +83,12 @@ def query_content(Limit, Medium, Formality, Max_Length, search_param):
                 display(HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+link+'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>'))
         elif Medium == 'audio':
             for i in range (0, Limit):
+                title = all_objects[i].title
+                source_name = all_objects[i].provider.name
                 link = all_objects[i].content_url
-                display(HTML("<iframe src="+"'"+link+"'"+ "style='width:100%; height:100px;' scrolling='no' frameborder='no'></iframe>"))
+                display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
+                IPython.display.Audio(link)
+                # display(HTML("<iframe src="+"'"+link+"'"+ "style='width:100%; height:100px;' scrolling='no' frameborder='no'></iframe>"))
 
 
 def count_formality_per_medium(medium, formality, param):
@@ -94,19 +99,19 @@ def plot_stacked(param):
     x = [medium.name for medium in session.query(Medium).all()]
     trace1 = go.Bar(
         x= x,
-        y=[count_formality_per_medium(x[0],'Informal',param),count_formality_per_medium(x[1],'Informal',param)],
+        y=[count_formality_per_medium(x[0],'Informal',param),count_formality_per_medium(x[1],'Informal',param),count_formality_per_medium(x[3],'Informal',param)],
         # ,count_formality_per_medium(x[1],'Informal',param),count_formality_per_medium(x[2],'Informal',param)],
         name='Informal')
 
     trace2 = go.Bar(
        x = x,
-       y=[count_formality_per_medium(x[0],'Intermediate',param),count_formality_per_medium(x[1],'Intermediate',param)],
+       y=[count_formality_per_medium(x[0],'Intermediate',param),count_formality_per_medium(x[1],'Intermediate',param),count_formality_per_medium(x[3],'Intermediate',param)],
 #         y=[count_formality_per_medium(x[0],'Intermediate',param),count_formality_per_medium(x[1],'Intermediate',param),count_formality_per_medium(x[2],'Intermediate',param)],
         name='Intermediate')
 
     trace3 = go.Bar(
         x = x,
-        y=[count_formality_per_medium(x[0],'Formal',param),count_formality_per_medium(x[1],'Formal',param)],
+        y=[count_formality_per_medium(x[0],'Formal',param),count_formality_per_medium(x[1],'Formal',param),count_formality_per_medium(x[3],'Formal',param)],
 #         y=[count_formality_per_medium(x[0],'Formal',param),count_formality_per_medium(x[1],'Formal',param),count_formality_per_medium(x[2],'Formal',param)],
         name='Formal')
 
