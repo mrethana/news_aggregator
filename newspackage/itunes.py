@@ -197,7 +197,7 @@ def audiobook_search(search_word, media_value='audiobook', entity_value='audiobo
         df = pd.DataFrame(itunes_result_json['results'])
         #NOTE LENGTH IS ACTUALLY THE PRICE BUT USE SAME LABEL FOR CONSISTENCY
         df = df.rename(index = str, columns= {'artistName': 'source','collectionViewUrl':'web_url',
-                                        'artworkUrl100':'image_url','price': 'length','releaseDate':'date','collectionName':'title'})
+                                        'artworkUrl100':'image_url','collectionPrice': 'length','releaseDate':'date','collectionName':'title'})
         df['source_id'] = 'Itunes Audiobook'
         df['formality'] = 'Formal'
         df['medium'] = 'audio'
@@ -211,11 +211,14 @@ def audiobook_search(search_word, media_value='audiobook', entity_value='audiobo
 def call_audiobook_api(categories):
     empty = pd.DataFrame()
     for category in categories:
-        df = audiobook_search(category)
-        if type(df) != str:
-            empty = empty.append(df, sort=True)
-            time.sleep(2)
-            print('Added '+category)
-        else:
-            pass
+        try:
+            df = audiobook_search(category)
+            if type(df) != str:
+                empty = empty.append(df, sort=True)
+                time.sleep(2)
+                print('Added '+category)
+            else:
+                pass
+        except:
+            print(category + " EXCEPTION!!!")
     return empty
