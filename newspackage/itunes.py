@@ -89,3 +89,45 @@ def call_podcast_api(categories, podcasts):
                 print('EXCEPTION')
                 time.sleep(2)
     return empty
+
+#######EBOOKS
+
+def clean_ebook_date(df):
+    dates = []
+    for index, row in df.iterrows():
+        date = pd.to_datetime(row.date).date().strftime('%Y-%m-%d')
+        dates.append(date)
+    df['date'] = dates
+    return df
+
+
+def ebook_search(search_word, media_value='ebook', entity_value='ebook'):
+    payload = {'term': search_word, 'media': media_value, 'entity' : entity_value}
+    itunes_request = requests.get('https://itunes.apple.com/search', params=payload)
+    itunes_result_json = itunes_request.json()
+    result_count = itunes_result_json["resultCount"]
+    if result_count > 0:
+        df = pd.DataFrame(itunes_result_json['results'])
+        #NOTE LENGTH IS ACTUALLY THE PRICE BUT USE SAME LABEL FOR CONSISTENCY
+        df = df.rename(index = str, columns= {'artistName': 'source','artistViewUrl':'web_url',
+                                        'artworkUrl100':'image_url','price': 'length','releaseDate':'date','trackName':'title'})
+        df['source_id'] = 'Itunes Ebook'
+        df['formality'] = 'Formal'
+        df['medium'] = 'text'
+        df['param'] = search_word
+        return clean_ebook_date(df)
+    else:
+        print('No Results!')
+        return 'Empty'
+
+def call_ebook_api(categories):
+    empty = pd.DataFrame()
+    for category in categories:
+        df = ebook_search(category)
+        if type(df) != str:
+            empty = empty.append(df, sort=True)
+            time.sleep(2)
+            print('Added '+category)
+        else:
+            pass
+    return empty
