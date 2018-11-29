@@ -150,7 +150,7 @@ def add_content_objects():
 # add_content_objects()
 # add_category_objects()
 # add_formality_objects()
-
+#
 # print('Podcast Search...')
 # podcasts = call_podcast_api(nutrition_cats, podcast_names)
 # find_or_create_content(podcasts)
@@ -159,10 +159,19 @@ def add_content_objects():
 # add_content_objects()
 # add_category_objects()
 # add_formality_objects()
+#
+# print('Ebook Search....')
+# ebooks = call_ebook_api(nutrition_cats)
+# find_or_create_content(ebooks)
+# add_medium_objects()
+# add_provider_objects()
+# add_content_objects()
+# add_category_objects()
+# add_formality_objects()
 
-print('Ebook Search....')
-ebooks = call_ebook_api(nutrition_cats)
-find_or_create_content(ebooks)
+print('Movie Search....')
+movies = call_movie_api(movie_list,nutrition_cats)
+find_or_create_content(movies)
 add_medium_objects()
 add_provider_objects()
 add_content_objects()

@@ -130,5 +130,60 @@ def call_ebook_api(categories):
             time.sleep(2)
             print('Added '+category)
         else:
-            pass
+            time.sleep(2)
+    return empty
+
+
+###### MOVIE SEARCH
+
+def add_category_to_movie(df, categories):
+    all_params = []
+    for index, row in df.iterrows():
+        try:
+            words = set(re.sub("[^\w]", " ",  row.description).split())
+            intersect = list(words.intersection(categories))
+            if len(intersect) > 0:
+                category = intersect[0]
+            else:
+                category = 'general'
+        except:
+            category = 'general'
+        all_params.append(category)
+    df['param'] = all_params
+    return df
+
+def movie_search(search_word,categories, media_value='movie', entity_value='movie'):
+    payload = {'term': search_word, 'media': media_value, 'entity' : entity_value}
+    itunes_request = requests.get('https://itunes.apple.com/search', params=payload)
+    itunes_result_json = itunes_request.json()
+    result_count = itunes_result_json["resultCount"]
+    if result_count > 0:
+        df = pd.DataFrame(itunes_result_json['results'])
+        df = df.rename(index = str, columns= {'artistName': 'source','trackViewUrl':'web_url',
+                                        'artworkUrl100':'image_url','trackTimeMillis': 'length'
+                                              ,'releaseDate':'date','trackName':'title', 'longDescription':'description'})
+        df['source_id'] = 'Itunes Movie'
+        df['formality'] = 'Formal'
+        df['medium'] = 'video'
+        df['length'] = round(df['length'] / 60000)
+        df = df.fillna(1)
+        df = clean_ebook_date(df)
+        return add_category_to_movie(df,categories)
+    else:
+        print('No Results!')
+        return 'Empty'
+
+def call_movie_api(movies, categories):
+    empty = pd.DataFrame()
+    for movie in movies:
+        try:
+            df = movie_search(movie, categories)
+            if type(df) != str:
+                empty = empty.append(df, sort=True)
+                time.sleep(5)
+                print('Added '+movie)
+            else:
+                time.sleep(5)
+        except:
+            print(movie + ' EXCEPTION')
     return empty
