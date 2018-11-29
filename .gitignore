@@ -2,3 +2,4 @@ newspackage/apikeys.py
 newspackage/__init__.py
 newspackage/rabbit.db
 newspackage/rabbit2.db
+newspackage/all_content.csv
