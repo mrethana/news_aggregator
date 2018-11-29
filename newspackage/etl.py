@@ -74,13 +74,22 @@ def query_content(Limit, Medium, Formality, Max_Length, search_param):
                 for i in range (0, Limit):
                     display(Tweet(all_objects[i].content_url))
         elif Medium == 'video':
-            for i in range (0, Limit):
-                title = all_objects[i].title
-                link = all_objects[i].content_url
-                link = link[-11:]
-                source_name = all_objects[i].provider.name
-                display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
-                display(HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+link+'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>'))
+            if Formality != 'Formal':
+                for i in range (0, Limit):
+                    title = all_objects[i].title
+                    link = all_objects[i].content_url
+                    link = link[-11:]
+                    source_name = all_objects[i].provider.name
+                    display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
+                    display(HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+link+'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>'))
+            else:
+                for i in range (0, Limit):
+                    title = all_objects[i].title
+                    link = all_objects[i].content_url
+                    image = all_objects[i].image_url
+                    source_name = all_objects[i].provider.name
+                    display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
+                    display(Image(url = image))
         elif Medium == 'audio':
             for i in range (0, Limit):
                 title = all_objects[i].title
@@ -99,19 +108,45 @@ def plot_stacked(param):
     trace1 = go.Bar(
         x= x,
         y=[count_formality_per_medium(x[0],'Informal',param),count_formality_per_medium(x[1],'Informal',param),count_formality_per_medium(x[2],'Informal',param)],
-        # ,count_formality_per_medium(x[1],'Informal',param),count_formality_per_medium(x[2],'Informal',param)],
         name='Informal')
 
     trace2 = go.Bar(
        x = x,
        y=[count_formality_per_medium(x[0],'Intermediate',param),count_formality_per_medium(x[1],'Intermediate',param),count_formality_per_medium(x[2],'Intermediate',param)],
-#         y=[count_formality_per_medium(x[0],'Intermediate',param),count_formality_per_medium(x[1],'Intermediate',param),count_formality_per_medium(x[2],'Intermediate',param)],
         name='Intermediate')
 
     trace3 = go.Bar(
         x = x,
         y=[count_formality_per_medium(x[0],'Formal',param),count_formality_per_medium(x[1],'Formal',param),count_formality_per_medium(x[2],'Formal',param)],
-#         y=[count_formality_per_medium(x[0],'Formal',param),count_formality_per_medium(x[1],'Formal',param),count_formality_per_medium(x[2],'Formal',param)],
+        name='Formal')
+
+    data = [trace1, trace2, trace3]
+    layout = go.Layout(
+        barmode='stack'
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+    return py.iplot(fig, filename='plot from API (20)')
+
+def count_formality_per_medium_OVERALL(medium, formality):
+    return len([content for content in session.query(Content).all() if content.medium.name == medium if content.provider.formality.type == formality])
+
+#plot stacked bar in dashboard
+def plot_stacked_OVERALL():
+    x = [medium.name for medium in session.query(Medium).all()]
+    trace1 = go.Bar(
+        x= x,
+        y=[count_formality_per_medium_OVERALL(x[0],'Informal'),count_formality_per_medium_OVERALL(x[1],'Informal'),count_formality_per_medium_OVERALL(x[2],'Informal')],
+        name='Informal')
+
+    trace2 = go.Bar(
+       x = x,
+       y=[count_formality_per_medium_OVERALL(x[0],'Intermediate'),count_formality_per_medium_OVERALL(x[1],'Intermediate'),count_formality_per_medium_OVERALL(x[2],'Intermediate')],
+        name='Intermediate')
+
+    trace3 = go.Bar(
+        x = x,
+        y=[count_formality_per_medium_OVERALL(x[0],'Formal'),count_formality_per_medium_OVERALL(x[1],'Formal'),count_formality_per_medium_OVERALL(x[2],'Formal')],
         name='Formal')
 
     data = [trace1, trace2, trace3]
