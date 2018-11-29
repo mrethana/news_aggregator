@@ -161,7 +161,7 @@ def add_content_objects():
 # add_formality_objects()
 
 print('Ebook Search....')
-ebooks = call_ebook_api(categories)
+ebooks = call_ebook_api(nutrition_cats)
 find_or_create_content(ebooks)
 add_medium_objects()
 add_provider_objects()

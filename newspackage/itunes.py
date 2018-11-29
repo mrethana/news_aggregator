@@ -109,12 +109,13 @@ def ebook_search(search_word, media_value='ebook', entity_value='ebook'):
     if result_count > 0:
         df = pd.DataFrame(itunes_result_json['results'])
         #NOTE LENGTH IS ACTUALLY THE PRICE BUT USE SAME LABEL FOR CONSISTENCY
-        df = df.rename(index = str, columns= {'artistName': 'source','artistViewUrl':'web_url',
+        df = df.rename(index = str, columns= {'artistName': 'source','trackViewUrl':'web_url',
                                         'artworkUrl100':'image_url','price': 'length','releaseDate':'date','trackName':'title'})
         df['source_id'] = 'Itunes Ebook'
         df['formality'] = 'Formal'
         df['medium'] = 'text'
         df['param'] = search_word
+        df = df.fillna(1)
         return clean_ebook_date(df)
     else:
         print('No Results!')
