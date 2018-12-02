@@ -15,7 +15,7 @@ youtube_searches = ['@Dr.DonColbert', '@StephandAdam', '@NicholaLudlam-Raine', '
 
 
 nutrition_cats = ['keto',  'mct', 'natural', 'corn-fed', 'cruciferous','paleolithic',
-'vegetable', 'cooking', 'factory', 'fat', 'anti-biotic', 'grass-fed', 'gluten', 'vegan', 'vegetarian'
+'vegetable', 'cooking', 'fat', 'anti-biotic', 'grass-fed', 'gluten', 'vegan', 'vegetarian'
 ,'paleo', 'ketogenic', 'leaky gut', 'meal prep', 'micronutrient', 'macronutrient', 'pressure cooked carbs', 'sprouted carbs', 'mct oil', 'coconut oil', 'lean protein', 'fat on nutrion label', 'cholestrol', 'natural sugars', 'diabetes', 'brain fog', 'sourdough', 'bcaas', 'essential amino acids'
 , 'wild fish', 'farm raised fish', 'corn-fed beef', 'wild game', 'bioavailability', 'amino acids', 'meat', 'grains', 'vitamins', 'supplements', 'sprouts', 'beans', 'legumes', 'lectins', 'night shade', 'auto-immune', 'hormone', 'gluconeogenesis', 'bad fat', 'good fat'
 , 'root veggies', 'cruciferous vegetables', 'dark leafy greens', 'anti-inflammatory', 'infloamation', 'energy', 'mood', 'gut brain connection', 'wheat belly', 'fermented', 'vegetable oil', 'cooking oils', 'glysophate', 'pesticides', 'factory farming', 'sugar', 'fat loss', 'free range', 'anti-biotic free', 'organic'
