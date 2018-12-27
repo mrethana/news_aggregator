@@ -76,7 +76,7 @@ def youtube_search(q, max_results=50,order="date", token=None, location=None, lo
             tags = []
 
         youtube_dict = {'tags':tags,'source_id': channelId,'source': channelTitle,'categoryId':categoryId,'title':title,'videoId':videoId,'viewCount':viewCount,'commentCount':commentCount,'favoriteCount':favoriteCount,
-                        'formality':'Intermediate', 'medium':'video','date':date, 'description': description, 'web_url':url, 'image_url':image_url, 'length':length}
+                        'formality':'Intermediate','difficulty':'Easy', 'medium':'video','date':date, 'description': description, 'web_url':url, 'image_url':image_url, 'length':length}
         all_dicts.append(youtube_dict)
     return pd.DataFrame(all_dicts)
 

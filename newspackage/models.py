@@ -19,6 +19,8 @@ class Content(Base):
     provider = relationship('Provider', back_populates = 'content')
     category_id = Column(Integer, ForeignKey('categories.id'))
     category = relationship('Category', back_populates = 'content')
+    difficulty_id = Column(Integer, ForeignKey('difficulties.id'))
+    difficulty = relationship('Difficulty', back_populates = 'content')
     # sub_categories = relationship('Category',secondary='content_categories')
 
 
@@ -36,7 +38,12 @@ class Category(Base):
     id = Column(Integer, primary_key = True)
     name = Column(String(100))
     content = relationship('Content', back_populates = 'category')
-    # actors = relationship('Actor',secondary='actor_roles') to be sub categories
+
+class Difficulty(Base):
+    __tablename__ = 'difficulties'
+    id = Column(Integer, primary_key = True)
+    type = Column(String(100))
+    content = relationship('Content', back_populates = 'difficulty')
 
 # class ContentCategories(Base):
 #      __tablename__ = 'content_categories'

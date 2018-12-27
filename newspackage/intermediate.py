@@ -30,6 +30,7 @@ def NYT_dropped_rows(df):
     df.word_count = round(df.word_count / 150)
     df.document_type = 'text'
     df['formality'] = 'Intermediate'
+    df['difficulty'] = 'Medium'
     return df
 
 def NYT_dataframe_clean(df):
@@ -104,6 +105,7 @@ def clean_articles(list_of_dicts, search_param):
         df['param'] = search_param
         df['publishedAt'] = df['publishedAt'].apply(lambda x: pd.to_datetime(x).date().strftime('%Y-%m-%d'))
         df['formality'] = 'Intermediate'
+        df['difficulty'] = 'Medium'
         df['length'] = add_words(df)
         df = rename_columns(df)
         print(search_param)

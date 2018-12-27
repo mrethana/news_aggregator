@@ -16,12 +16,14 @@ new_provider_objects = []
 new_content_objects = []
 new_category_objects = []
 new_formality_objects = []
+new_difficulty_objects = []
 
 all_medium_titles = {medium.name:medium for medium in session.query(Medium).all()}
 all_provider_titles = {provider.name: provider for provider in session.query(Provider).all()}
 all_content_titles = {content.content_url: content for content in session.query(Content).all()}
 all_category_titles = {category.name: category for category in session.query(Category).all()}
 all_formality_titles = {formality.type: formality for formality in session.query(Formality).all()}
+all_difficulty_titles = {difficulty.type: difficulty for difficulty in session.query(Difficulty).all()}
 
 
 def find_or_create_medium(medium_name):
@@ -42,6 +44,16 @@ def find_or_create_formality(formality_name):
         object = Formality(type = name)
         new_formality_objects.append(object)
         all_formality_titles[formality_name] = object
+        return object
+
+def find_or_create_difficulty(difficulty_name):
+    if difficulty_name in all_difficulty_titles.keys():
+        return all_difficulty_titles[difficulty_name]
+    else:
+        name = difficulty_name
+        object = Difficulty(type = name)
+        new_difficulty_objects.append(object)
+        all_difficulty_titles[difficulty_name] = object
         return object
 
 def find_or_create_category(category_name):
@@ -82,7 +94,8 @@ def find_or_create_content(dataframe):
             medium = find_or_create_medium(row.medium)#Medium(name = 'text')
             provider = find_or_create_provider(row.source, row.source_id, row.formality) #Provider(provider_name = 'The New York Times', newsapi_id='the-new-york-times')
             category = find_or_create_category(row.param)
-            content_obj = Content(content_url=content_url, image_url=image_url, title=title, published = published,medium = medium,provider=provider, length = length, category = category)
+            difficulty = find_or_create_difficulty(row.difficulty)
+            content_obj = Content(content_url=content_url, image_url=image_url, title=title, published = published,medium = medium,provider=provider, length = length, category = category, difficulty=difficulty)
             print(content_obj)
             all_content_titles[title] = content_obj
             new_content_objects.append(content_obj)
@@ -107,13 +120,17 @@ def add_category_objects():
     for category in new_category_objects:
         session.add(category)
         session.commit()
+def add_difficulty_objects():
+    for difficulty in new_difficulty_objects:
+        session.add(difficulty)
+        session.commit()
 
 def add_content_objects():
     for content in new_content_objects:
         session.add(content)
         print(content)
         session.commit()
-
+# 
 # print('Intermediate text search...')
 # print('News API')
 # NAPI = call_news_api(nutrition_cats)
@@ -123,6 +140,7 @@ def add_content_objects():
 # add_content_objects()
 # add_category_objects()
 # add_formality_objects()
+# add_difficulty_objects()
 #
 # print("NYT API")
 # NYTAPI = NYT_pull(nutrition_cats)
@@ -132,6 +150,7 @@ def add_content_objects():
 # add_content_objects()
 # add_category_objects()
 # add_formality_objects()
+# add_difficulty_objects()
 #
 # print('Tweets search...')
 # tweets = twitter_api_call(twitter_handles, nutrition_cats)
@@ -141,15 +160,17 @@ def add_content_objects():
 # add_content_objects()
 # add_category_objects()
 # add_formality_objects()
+# add_difficulty_objects()
 #
-print('Youtube Search...')
-videos = youtube_api_call(youtube_searches, nutrition_cats)
-find_or_create_content(videos)
-add_medium_objects()
-add_provider_objects()
-add_content_objects()
-add_category_objects()
-add_formality_objects()
+# print('Youtube Search...')
+# videos = youtube_api_call(youtube_searches, nutrition_cats)
+# find_or_create_content(videos)
+# add_medium_objects()
+# add_provider_objects()
+# add_content_objects()
+# add_category_objects()
+# add_formality_objects()
+# add_difficulty_objects()
 #
 # print('Podcast Search...')
 # podcasts = call_podcast_api(nutrition_cats, podcast_names)
@@ -159,6 +180,7 @@ add_formality_objects()
 # add_content_objects()
 # add_category_objects()
 # add_formality_objects()
+# add_difficulty_objects()
 #
 # print('Ebook Search....')
 # ebooks = call_ebook_api(nutrition_cats)
@@ -168,21 +190,46 @@ add_formality_objects()
 # add_content_objects()
 # add_category_objects()
 # add_formality_objects()
+# add_difficulty_objects()
 
-# print('Movie Search....')
-# movies = call_movie_api(movie_list,nutrition_cats)
-# find_or_create_content(movies)
-# add_medium_objects()
-# add_provider_objects()
-# add_content_objects()
-# add_category_objects()
-# add_formality_objects()
+print('Movie Search....')
+movies = call_movie_api(movie_list,nutrition_cats)
+find_or_create_content(movies)
+add_medium_objects()
+add_provider_objects()
+add_content_objects()
+add_category_objects()
+add_formality_objects()
+add_difficulty_objects()
 
-# print('Audiobook Search....')
-# audiobooks = call_audiobook_api(nutrition_cats)
-# find_or_create_content(audiobooks)
-# add_medium_objects()
-# add_provider_objects()
-# add_content_objects()
-# add_category_objects()
-# add_formality_objects()
+print('Audiobook Search....')
+audiobooks = call_audiobook_api(nutrition_cats)
+find_or_create_content(audiobooks)
+add_medium_objects()
+add_provider_objects()
+add_content_objects()
+add_category_objects()
+add_formality_objects()
+add_difficulty_objects()
+
+print('Facebook Search....')
+fb_vid = create_sample_fb(nyt_fb_vid, categories, 'video')
+find_or_create_content(fb_vid)
+fb_posts = create_sample_fb(nyt_fb_post, categories, 'text')
+find_or_create_content(fb_posts)
+add_medium_objects()
+add_provider_objects()
+add_content_objects()
+add_category_objects()
+add_formality_objects()
+add_difficulty_objects()
+
+print('Instagram Search....')
+insta = create_sample_insta(insta_post, categories)
+find_or_create_content(insta)
+add_medium_objects()
+add_provider_objects()
+add_content_objects()
+add_category_objects()
+add_formality_objects()
+add_difficulty_objects()

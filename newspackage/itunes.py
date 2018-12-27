@@ -43,6 +43,7 @@ def df_podcast_episodes(feed_url):
             info['date']= pd.to_datetime(episode['published']).date().strftime('%Y-%m-%d') if 'published' in episode else ''
             info['medium'] = 'audio'
             info['formality'] = 'Intermediate'
+            info['difficulty'] = 'Medium'
             info['source'] = feed['feed']['title'] if 'title' in feed['feed'] else ''
             info['source_id'] = feed['feed']['title_detail']['base'] if 'title_detail' in feed['feed'] else ''
             try:
@@ -113,6 +114,7 @@ def ebook_search(search_word, media_value='ebook', entity_value='ebook'):
                                         'artworkUrl100':'image_url','price': 'length','releaseDate':'date','trackName':'title'})
         df['source_id'] = 'Itunes Ebook'
         df['formality'] = 'Formal'
+        df['difficulty'] = 'Hard'
         df['medium'] = 'text'
         df['param'] = search_word
         df = df.fillna(1)
@@ -164,6 +166,7 @@ def movie_search(search_word,categories, media_value='movie', entity_value='movi
                                               ,'releaseDate':'date','trackName':'title', 'longDescription':'description'})
         df['source_id'] = 'Itunes Movie'
         df['formality'] = 'Formal'
+        df['difficulty'] = 'Medium'
         df['medium'] = 'video'
         df['length'] = round(df['length'] / 60000)
         df = df.fillna(1)
@@ -200,6 +203,7 @@ def audiobook_search(search_word, media_value='audiobook', entity_value='audiobo
                                         'artworkUrl100':'image_url','collectionPrice': 'length','releaseDate':'date','collectionName':'title'})
         df['source_id'] = 'Itunes Audiobook'
         df['formality'] = 'Formal'
+        df['difficulty'] = 'Hard'
         df['medium'] = 'audio'
         df['param'] = search_word
         df = df.fillna(1)

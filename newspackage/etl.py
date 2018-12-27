@@ -56,8 +56,8 @@ class Tweet(object):
     def _repr_html_(self):
         return self.text
 
-def query_content(Limit, Medium, Formality, Max_Length, search_param):
-    all_objects = [content for content in session.query(Content).order_by(desc(Content.published)).all() if content.medium.name == Medium if search_param in content.category.name if content.provider.formality.type == Formality if content.length < Max_Length]
+def query_content(Limit, Medium, Formality, Max_Length, search_param, Difficulty):
+    all_objects = [content for content in session.query(Content).order_by(desc(Content.published)).all() if content.medium.name == Medium if search_param in content.category.name if content.provider.formality.type == Formality if content.length < Max_Length if content.difficulty.type == Difficulty]
     if len(all_objects) < 1:
         print('No Content')
     else:
