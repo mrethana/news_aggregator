@@ -8,6 +8,11 @@ from datetime import date
 import re
 from info import *
 import random
+import nltk
+from nltk import word_tokenize
+from nltk.util import ngrams
+from collections import Counter
+from nltk.tokenize import RegexpTokenizer
 
 auth = tweepy.OAuthHandler(twitter_1, twitter_2)
 auth.set_access_token(twitter_3, twitter_4)
@@ -15,31 +20,98 @@ api = tweepy.API(auth)
 
 #clean response from twitter
 
+def random_difficulties(length):
+    difficulties = []
+    for i in list(range(0,length)):
+        difficulties.append(random.choice(['Easy','Medium','Hard']))
+    return difficulties
+
+def tokenize_text(words):
+    tokenizer = RegexpTokenizer('[A-Za-z]\w+')
+    all_tokens = tokenizer.tokenize(words)
+    case_insensitive = [token.lower() for token in all_tokens]
+    bigrams = list(ngrams(token,2))
+    joined = [' '.join(gram) for gram in bigrams]
+    trigrams = list(ngrams(token,3))
+    tri_joined = [' '.join(gram) for gram in trigrams]
+    case_insensitive.extend(joined)
+    case_insensitive.extend(tri_joined)
+    return set(case_insensitive)
+
 def clean_tweets(data, categories):
     topics = []
+    topics2 = []
+    topics3 = []
+    topics4 = []
+    topics5 = []
     for tweet in data:
-        try:
+        categories_dict = {1:'null',2:'null',3:'null',4:'null',5:'null'}
+        words = tokenize_text(tweet.text)
+        intersection = list(words.intersection(categories))
+        if len(intersection) > 0:
+            for i in list(range(0,len(intersection))):
+                categories_dict[i+1] = intersection[i]
+        else:
+            categories_dict[1] = 'general'
+        topics.append(categories_dict[1])
+        topics2.append(categories_dict[2])
+        topics3.append(categories_dict[3])
+        topics4.append(categories_dict[4])
+        topics5.append(categories_dict[5])
+    tweets = [{'title':tweet.id, 'date':tweet.created_at.date().strftime('%Y-%m-%d'),
+       'description': tweet.text, 'source':tweet.user.screen_name,'source_id':tweet.user.id_str,
+       'formality': 'Informal',
+       'length': 1,'medium':'text'} for tweet in data]
+    tweets = pd.DataFrame(tweets)
+    tweets['param_1'] = topics
+    tweets['param_2'] = topics2
+    tweets['param_3'] = topics3
+    tweets['param_4'] = topics4
+    tweets['param_5'] = topics5
+    tweets['difficulty'] = random_difficulties(len(tweets['param_1']))
+    return tweets
+
+
+def clean_tweets(data, categories):
+    topics = []
+    topics2 = []
+    topics3 = []
+    topics4 = []
+    topics5 = []
+    for tweet in data:
+        categories = {1:'null',2:'null',3:'null',4:'null',5:'null'}
+        try: #if there are hashtags then find the intersection between categories and hashtags
             hashtag = tweet.entities['hashtags'][0]['text']
             tags = list(pd.DataFrame(tweet.entities['hashtags']).text)
             intersect = list(set(tags).intersection(categories))
             if len(intersect) > 0:
-                hashtag = intersect[0]
+                for i in list(0,len(intersect)):
+                    categories[i+1] = intersect[i]
             else:
-                hashtag = hashtag
-        except IndexError:
+                categories[1] = hashtag
+        except IndexError: #if no hashtags then read the body of the tweet and find intersection
             words = set(re.sub("[^\w]", " ",  tweet.text).split())
             int2 = list(words.intersection(categories))
             if len(int2) > 0:
-                hashtag = int2[0]
+                for i in list(0,len(int2)):
+                    categories[i+1] = int2[i]
             else:
-                hashtag = 'general'
-        topics.append(hashtag)
+                categories[1] = 'general'
+        topics.append(categories[1])
+        topics2.append(categories[2])
+        topics3.append(categories[3])
+        topics4.append(categories[4])
+        topics5.append(categories[5])
     tweets = [{'title':tweet.id, 'date':tweet.created_at.date().strftime('%Y-%m-%d'),
        'description': tweet.text, 'source':tweet.user.screen_name,'source_id':tweet.user.id_str,
        'formality': 'Informal','difficulty':'Easy',
        'length': 1,'medium':'text'} for tweet in data]
     tweets = pd.DataFrame(tweets)
-    tweets['param'] = topics
+    tweets['param_1'] = topics
+    tweets['param_2'] = topics2
+    tweets['param_3'] = topics3
+    tweets['param_4'] = topics4
+    tweets['param_5'] = topics5
     return tweets
 
 #CALL API

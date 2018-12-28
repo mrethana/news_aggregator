@@ -4,6 +4,7 @@ from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref
 
 class Content(Base):
     __tablename__ = 'content'
@@ -17,11 +18,24 @@ class Content(Base):
     medium = relationship('Medium', back_populates = 'content')
     provider_id = Column(Integer, ForeignKey('providers.id'))
     provider = relationship('Provider', back_populates = 'content')
-    category_id = Column(Integer, ForeignKey('categories.id'))
-    category = relationship('Category', back_populates = 'content')
+    categories = relationship('Category',secondary='content_categories',back_populates = 'content_pieces')
     difficulty_id = Column(Integer, ForeignKey('difficulties.id'))
     difficulty = relationship('Difficulty', back_populates = 'content')
-    # sub_categories = relationship('Category',secondary='content_categories')
+
+class Category(Base):
+    __tablename__ = 'categories'
+    id = Column(Integer, primary_key = True)
+    name = Column(String(100))
+    content_pieces = relationship('Content',secondary='content_categories', back_populates = 'categories')
+
+class ContentCategory(Base):
+    __tablename__ = 'content_categories'
+    id = Column(Integer, primary_key = True)
+    value = Column(Integer)
+    content_id = Column(Integer, ForeignKey('content.id'))
+    category_id = Column(Integer, ForeignKey('categories.id'))
+    content = relationship(Content, backref=backref('content_categories', cascade='all, delete-orphan'))
+    category = relationship(Category, backref=backref('content_categories', cascade='all, delete-orphan'))
 
 
 class Provider(Base):
@@ -33,11 +47,6 @@ class Provider(Base):
     formality_id = Column(Integer, ForeignKey('formality.id'))
     formality = relationship('Formality', back_populates = 'provider')
 
-class Category(Base):
-    __tablename__ = 'categories'
-    id = Column(Integer, primary_key = True)
-    name = Column(String(100))
-    content = relationship('Content', back_populates = 'category')
 
 class Difficulty(Base):
     __tablename__ = 'difficulties'
@@ -45,10 +54,6 @@ class Difficulty(Base):
     type = Column(String(100))
     content = relationship('Content', back_populates = 'difficulty')
 
-# class ContentCategories(Base):
-#      __tablename__ = 'content_categories'
-#     content_id = Column(Integer, ForeignKey('content.id'), primary_key = True)
-#     category_id = Column(Integer, ForeignKey('categories.id'), primary_key = True)
 
 class Formality(Base):
     __tablename__ = 'formality'
