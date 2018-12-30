@@ -98,3 +98,21 @@ sources_list = ['abc-news',
  'wired',
  'ynet']
 sources_joined = ','.join(sources_list)
+
+def tokenize_text(words):
+    tokenizer = RegexpTokenizer('[A-Za-z]\w+')
+    all_tokens = tokenizer.tokenize(words)
+    case_insensitive = [token.lower() for token in all_tokens]
+    bigrams = list(ngrams(token,2))
+    joined = [' '.join(gram) for gram in bigrams]
+    trigrams = list(ngrams(token,3))
+    tri_joined = [' '.join(gram) for gram in trigrams]
+    case_insensitive.extend(joined)
+    case_insensitive.extend(tri_joined)
+    return set(case_insensitive)
+
+def random_difficulties(length_of_df):
+    difficulties = []
+    for i in list(range(0,length_of_df)):
+        difficulties.append(random.choice(['Easy','Medium','Hard']))
+    return difficulties

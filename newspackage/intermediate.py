@@ -30,7 +30,7 @@ def NYT_dropped_rows(df):
     df.word_count = round(df.word_count / 150)
     df.document_type = 'text'
     df['formality'] = 'Intermediate'
-    df['difficulty'] = 'Medium'
+    df['difficulty'] = random_difficulties(len(df['formality']))
     return df
 
 def NYT_dataframe_clean(df):
@@ -54,9 +54,11 @@ def NYT_api_call_parameter_ALLTIME(param, page, key):
     data = json.loads(resp.text)
     df = pd.DataFrame(data['response']['docs'])
     df = NYT_dataframe_clean(df)
-    df['param'] = param
+    df['param_1'] = param
     df['image_url'] = 'https://greaterbostonhcs.com/wp-content/uploads/2016/05/Nutrition.jpg'
     return df
+
+    categories = {2:'null',3:'null',4:'null',5:'null'}
 
 def NYT_pull(categories):
     empty = pd.DataFrame()

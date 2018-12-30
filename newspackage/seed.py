@@ -124,6 +124,7 @@ def find_or_create_content_categories(dataframe):
             new_content_category_objects.append(obj_4)
             obj_5 = ContentCategory(value = 5,content=content_obj,category=category_5)
             new_content_category_objects.append(obj_5)
+            print(obj_1)
 
 
 def add_medium_objects():
