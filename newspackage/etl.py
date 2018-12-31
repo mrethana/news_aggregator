@@ -57,46 +57,51 @@ class Tweet(object):
         return self.text
 
 def query_content(Limit, Medium, Formality, Max_Length, search_param, Difficulty):
-    all_objects = [content for content in session.query(Content).order_by(desc(Content.published)).all() if content.medium.name == Medium if search_param in content.category.name if content.provider.formality.type == Formality if content.length < Max_Length if content.difficulty.type == Difficulty]
+    all_objects = [content for content in session.query(Content).order_by(desc(Content.published)).all() if content.medium.name == Medium if search_param in [category.name for category in content.categories] if content.provider.formality.type == Formality if content.length < Max_Length if content.difficulty.type == Difficulty]
     if len(all_objects) < 1:
         print('No Content')
     else:
         if Medium == 'text':
             if Formality != 'Informal':
                 for i in range (0, Limit):
-                    title = all_objects[i].title
-                    link = all_objects[i].content_url
-                    image = all_objects[i].image_url
-                    source_name = all_objects[i].provider.name
-                    display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
-                    display(Image(url = image))
+                    display(all_objects[i].content_url)
+                    # title = all_objects[i].title
+                    # link = all_objects[i].content_url
+                    # image = all_objects[i].image_url
+                    # source_name = all_objects[i].provider.name
+                    # display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
+                    # display(Image(url = image))
             else:
                 for i in range (0, Limit):
-                    display(Tweet(all_objects[i].content_url))
+                    display(all_objects[i].content_url)
+                    # display(Tweet(all_objects[i].content_url))
         elif Medium == 'video':
             if Formality != 'Formal':
                 for i in range (0, Limit):
-                    title = all_objects[i].title
-                    link = all_objects[i].content_url
-                    link = link[-11:]
-                    source_name = all_objects[i].provider.name
-                    display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
-                    display(HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+link+'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>'))
-            else:
+                    display(all_objects[i].content_url)
+            #         title = all_objects[i].title
+            #         link = all_objects[i].content_url
+            #         link = link[-11:]
+            #         source_name = all_objects[i].provider.name
+            #         display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
+            #         display(HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/'+link+'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>'))
+            # else:
                 for i in range (0, Limit):
-                    title = all_objects[i].title
-                    link = all_objects[i].content_url
-                    image = all_objects[i].image_url
-                    source_name = all_objects[i].provider.name
-                    display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
-                    display(Image(url = image))
+                    display(all_objects[i].content_url)
+                    # title = all_objects[i].title
+                    # link = all_objects[i].content_url
+                    # image = all_objects[i].image_url
+                    # source_name = all_objects[i].provider.name
+                    # display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
+                    # display(Image(url = image))
         elif Medium == 'audio':
             for i in range (0, Limit):
-                title = all_objects[i].title
-                source_name = all_objects[i].provider.name
-                link = all_objects[i].content_url
-                display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
-                # display(HTML("<iframe src="+"'"+link+"'"+ "style='width:100%; height:100px;' scrolling='no' frameborder='no'></iframe>"))
+                display(all_objects[i].content_url)
+                # title = all_objects[i].title
+                # source_name = all_objects[i].provider.name
+                # link = all_objects[i].content_url
+                # display(HTML("<a href="+link+">"+source_name+': '+title+"</a>"))
+                # # display(HTML("<iframe src="+"'"+link+"'"+ "style='width:100%; height:100px;' scrolling='no' frameborder='no'></iframe>"))
 
 
 def count_formality_per_medium(medium, formality, param):
