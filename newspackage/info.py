@@ -1,3 +1,11 @@
+import nltk
+from nltk import word_tokenize
+from nltk.util import ngrams
+from collections import Counter
+from nltk.tokenize import RegexpTokenizer
+import random
+
+
 #all twitter handles to scrape
 twitter_handles = ['@ATPScience1', '@waitrose', '@MicrobiomeInst', '@veganrecipescom', '@cldiet', '@Onnit', '@vegsoc', '@VeganKosher', '@TheVeganSociety', '@vegan', '@Keto_Recipes_', '@the52diet', '@IFdiet', '@microbiome', '@metagenomics', '@microbiome_news', '@TheGutStuff', '@MyGutHealth', '@PaleoFX',
 '@PaleoFoundation', '@ThePaleoDiet', '@PaleoComfort', '@cavemanketo', '@KetoFlu', '@TheKetoKitchen_', '@EatKetoWithMe', '@KetoConnect', '@KetoDietZone', '@Ketogenic', '@USDANutrition', '@FoodRev', '@CSPI', '@simplyrecipes', '@FoodNetwork', '@CookingChannel', '@tasty', '@nytfood', '@finecooking', '@mrcookingpanda'
@@ -103,9 +111,9 @@ def tokenize_text(words):
     tokenizer = RegexpTokenizer('[A-Za-z]\w+')
     all_tokens = tokenizer.tokenize(words)
     case_insensitive = [token.lower() for token in all_tokens]
-    bigrams = list(ngrams(token,2))
+    bigrams = list(ngrams(case_insensitive,2))
     joined = [' '.join(gram) for gram in bigrams]
-    trigrams = list(ngrams(token,3))
+    trigrams = list(ngrams(case_insensitive,3))
     tri_joined = [' '.join(gram) for gram in trigrams]
     case_insensitive.extend(joined)
     case_insensitive.extend(tri_joined)
@@ -116,3 +124,14 @@ def random_difficulties(length_of_df):
     for i in list(range(0,length_of_df)):
         difficulties.append(random.choice(['Easy','Medium','Hard']))
     return difficulties
+
+def find_categories(text_to_tokenize, categories):
+    categories_dict = {1:'null',2:'null',3:'null',4:'null',5:'null'}
+    words = tokenize_text(text_to_tokenize)
+    intersection = list(words.intersection(categories))
+    if len(intersection) > 0:
+        for i in list(range(0,len(intersection))):
+            categories_dict[i+1] = intersection[i]
+    else:
+        categories_dict[1] = 'general'
+    return categories_dict

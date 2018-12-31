@@ -20,23 +20,6 @@ api = tweepy.API(auth)
 
 #clean response from twitter
 
-def random_difficulties(length_of_df):
-    difficulties = []
-    for i in list(range(0,length_of_df)):
-        difficulties.append(random.choice(['Easy','Medium','Hard']))
-    return difficulties
-
-def tokenize_text(words):
-    tokenizer = RegexpTokenizer('[A-Za-z]\w+')
-    all_tokens = tokenizer.tokenize(words)
-    case_insensitive = [token.lower() for token in all_tokens]
-    bigrams = list(ngrams(case_insensitive,2))
-    joined = [' '.join(gram) for gram in bigrams]
-    trigrams = list(ngrams(case_insensitive,3))
-    tri_joined = [' '.join(gram) for gram in trigrams]
-    case_insensitive.extend(joined)
-    case_insensitive.extend(tri_joined)
-    return set(case_insensitive)
 
 def clean_tweets(data, categories):
     topics = []
@@ -45,14 +28,7 @@ def clean_tweets(data, categories):
     topics4 = []
     topics5 = []
     for tweet in data:
-        categories_dict = {1:'null',2:'null',3:'null',4:'null',5:'null'}
-        words = tokenize_text(tweet.text)
-        intersection = list(words.intersection(categories))
-        if len(intersection) > 0:
-            for i in list(range(0,len(intersection))):
-                categories_dict[i+1] = intersection[i]
-        else:
-            categories_dict[1] = 'general'
+        categories_dict = find_categories(tweet.text, categories)
         topics.append(categories_dict[1])
         topics2.append(categories_dict[2])
         topics3.append(categories_dict[3])
