@@ -44,9 +44,8 @@ def df_podcast_episodes(feed_url):
             info['date']= pd.to_datetime(episode['published']).date().strftime('%Y-%m-%d') if 'published' in episode else ''
             info['medium'] = 'audio'
             info['formality'] = 'Intermediate'
-            info['difficulty'] = 'Medium'
             info['source'] = feed['feed']['title'] if 'title' in feed['feed'] else ''
-            info['source_id'] = feed['feed']['title_detail']['base'] if 'title_detail' in feed['feed'] else ''
+            info['source_id'] = 'Itunes Podcast'#feed['feed']['title_detail']['base'] if 'title_detail' in feed['feed'] else ''
             try:
                 info['web_url'] = episode['links'][0]['href'] if 'links' in episode else ''
             except:
@@ -58,20 +57,34 @@ def df_podcast_episodes(feed_url):
     else:
         print("No response!")
 
+
+
 def add_category_to_audio(df, categories):
-    all_params = []
+    topics = []
+    topics2 = []
+    topics3 = []
+    topics4 = []
+    topics5 = []
     for index, row in df.iterrows():
         try:
-            words = set(re.sub("[^\w]", " ",  row.description).split())
-            intersect = list(words.intersection(categories))
-            if len(intersect) > 0:
-                category = intersect[0]
-            else:
-                category = 'general'
+            categories_dict = find_categories(row.description, categories)
+            topics.append(categories_dict[1])
+            topics2.append(categories_dict[2])
+            topics3.append(categories_dict[3])
+            topics4.append(categories_dict[4])
+            topics5.append(categories_dict[5])
         except:
-            category = 'general'
-        all_params.append(category)
-    df['param'] = all_params
+            topics.append('null')
+            topics2.append('null')
+            topics3.append('null')
+            topics4.append('null')
+            topics5.append('null')
+    df['param_1'] = topics
+    df['param_2'] = topics2
+    df['param_3'] = topics3
+    df['param_4'] = topics4
+    df['param_5'] = topics5
+    df['difficulty'] = random_difficulties(len(df['param_1']))
     return df
 
 def call_podcast_api(categories, podcasts):
@@ -115,20 +128,44 @@ def ebook_search(search_word, media_value='ebook', entity_value='ebook'):
                                         'artworkUrl100':'image_url','price': 'length','releaseDate':'date','trackName':'title'})
         df['source_id'] = 'Itunes Ebook'
         df['formality'] = 'Formal'
-        df['difficulty'] = 'Hard'
         df['medium'] = 'text'
-        df['param'] = search_word
+        df['param_1'] = search_word
         df = df.fillna(1)
         return clean_ebook_date(df)
     else:
         print('No Results!')
         return 'Empty'
 
+def add_category_to_ebook(df, categories):
+    topics = []
+    topics2 = []
+    topics3 = []
+    topics4 = []
+    for index, row in df.iterrows():
+        try:
+            categories_dict = find_categories(row.description, categories)
+            topics.append(categories_dict[1])
+            topics2.append(categories_dict[2])
+            topics3.append(categories_dict[3])
+            topics4.append(categories_dict[4])
+        except:
+            topics.append('null')
+            topics2.append('null')
+            topics3.append('null')
+            topics4.append('null')
+    df['param_2'] = topics
+    df['param_3'] = topics2
+    df['param_4'] = topics3
+    df['param_5'] = topics4
+    df['difficulty'] = random_difficulties(len(df['param_2']))
+    return df
+
 def call_ebook_api(categories):
     empty = pd.DataFrame()
     for category in categories:
         df = ebook_search(category)
         if type(df) != str:
+            df = add_category_to_ebook(df,categories)
             empty = empty.append(df, sort=True)
             time.sleep(2)
             print('Added '+category)
@@ -140,20 +177,33 @@ def call_ebook_api(categories):
 ###### MOVIE SEARCH
 
 def add_category_to_movie(df, categories):
-    all_params = []
+    topics = []
+    topics2 = []
+    topics3 = []
+    topics4 = []
+    topics5 = []
     for index, row in df.iterrows():
         try:
-            words = set(re.sub("[^\w]", " ",  row.description).split())
-            intersect = list(words.intersection(categories))
-            if len(intersect) > 0:
-                category = intersect[0]
-            else:
-                category = 'general'
+            categories_dict = find_categories(row.description, categories)
+            topics.append(categories_dict[1])
+            topics2.append(categories_dict[2])
+            topics3.append(categories_dict[3])
+            topics4.append(categories_dict[4])
+            topics5.append(categories_dict[5])
         except:
-            category = 'general'
-        all_params.append(category)
-    df['param'] = all_params
+            topics.append('null')
+            topics2.append('null')
+            topics3.append('null')
+            topics4.append('null')
+            topics5.append('null')
+    df['param_1'] = topics
+    df['param_2'] = topics2
+    df['param_3'] = topics3
+    df['param_4'] = topics4
+    df['param_5'] = topics5
+    df['difficulty'] = random_difficulties(len(df['param_1']))
     return df
+
 
 def movie_search(search_word,categories, media_value='movie', entity_value='movie'):
     payload = {'term': search_word, 'media': media_value, 'entity' : entity_value}
@@ -167,7 +217,6 @@ def movie_search(search_word,categories, media_value='movie', entity_value='movi
                                               ,'releaseDate':'date','trackName':'title', 'longDescription':'description'})
         df['source_id'] = 'Itunes Movie'
         df['formality'] = 'Formal'
-        df['difficulty'] = 'Medium'
         df['medium'] = 'video'
         df['length'] = round(df['length'] / 60000)
         df = df.fillna(1)
@@ -204,20 +253,44 @@ def audiobook_search(search_word, media_value='audiobook', entity_value='audiobo
                                         'artworkUrl100':'image_url','collectionPrice': 'length','releaseDate':'date','collectionName':'title'})
         df['source_id'] = 'Itunes Audiobook'
         df['formality'] = 'Formal'
-        df['difficulty'] = 'Hard'
         df['medium'] = 'audio'
-        df['param'] = search_word
+        df['param_1'] = search_word
         df = df.fillna(1)
         return clean_ebook_date(df)
     else:
         print('No Results!')
         return 'Empty'
 
+def add_category_to_audiobook(df, categories):
+    topics = []
+    topics2 = []
+    topics3 = []
+    topics4 = []
+    for index, row in df.iterrows():
+        try:
+            categories_dict = find_categories(row.description, categories)
+            topics.append(categories_dict[1])
+            topics2.append(categories_dict[2])
+            topics3.append(categories_dict[3])
+            topics4.append(categories_dict[4])
+        except:
+            topics.append('null')
+            topics2.append('null')
+            topics3.append('null')
+            topics4.append('null')
+    df['param_2'] = topics
+    df['param_3'] = topics2
+    df['param_4'] = topics3
+    df['param_5'] = topics4
+    df['difficulty'] = random_difficulties(len(df['param_2']))
+    return df
+
 def call_audiobook_api(categories):
     empty = pd.DataFrame()
     for category in categories:
         try:
             df = audiobook_search(category)
+            df = add_category_to_audiobook(df, categories)
             if type(df) != str:
                 empty = empty.append(df, sort=True)
                 time.sleep(2)
