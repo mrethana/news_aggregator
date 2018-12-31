@@ -84,9 +84,9 @@ def random_length(length):
     return lengths
 
 
-categories = ['vegan','keto','vegetarian','paleo']
 
 def create_sample_fb(list_urls, categories_list, medium_type):
+    diets = ['vegan','keto','vegetarian','paleo']
     df = pd.DataFrame()
     df['web_url'] = list_urls
     df['image_url'] = list_urls
@@ -97,10 +97,14 @@ def create_sample_fb(list_urls, categories_list, medium_type):
     df['source'] = 'NYT Health'
     df['source_id'] = 'Facebook'
     df['formality'] = 'Informal'
-    df['difficulty'] = 'Medium'
     length = len(df.web_url)
+    df['difficulty'] = random_difficulties(length)
     df['length'] = random_length(length)
-    df['param'] = random_cat(categories_list,length)
+    df['param_1'] = random_cat(diets,length)
+    df['param_2'] = random_cat(categories_list,length)
+    df['param_3'] = random_cat(categories_list,length)
+    df['param_4'] = random_cat(categories_list,length)
+    df['param_5'] = random_cat(categories_list,length)
     return df
 
 #INSTAGRAM
@@ -113,6 +117,7 @@ insta_post = ['https://www.instagram.com/p/Br2LWE1hHOc/','https://www.instagram.
                  'https://www.instagram.com/p/Brmjeg4huS_/','https://www.instagram.com/p/BrmjRICBXVk/','https://www.instagram.com/p/BrmhYKiBli5/']
 
 def create_sample_insta(list_urls, categories_list):
+    diets = ['vegan','keto','vegetarian','paleo']
     df = pd.DataFrame()
     df['web_url'] = list_urls
     df['image_url'] = list_urls
@@ -122,9 +127,13 @@ def create_sample_insta(list_urls, categories_list):
     df['source'] = 'Daily Health Tips'
     df['source_id'] = 'Instagram'
     df['formality'] = 'Informal'
-    df['difficulty'] = 'Easy'
     df['medium'] = 'video'
     length = len(df.web_url)
+    df['difficulty'] = random_difficulties(length)
     df['length'] = random_length(length)
-    df['param'] = random_cat(categories_list,length)
+    df['param_1'] = random_cat(diets,length)
+    df['param_2'] = random_cat(categories_list,length)
+    df['param_3'] = random_cat(categories_list,length)
+    df['param_4'] = random_cat(categories_list,length)
+    df['param_5'] = random_cat(categories_list,length)
     return df

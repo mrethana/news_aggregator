@@ -133,5 +133,5 @@ def find_categories(text_to_tokenize, categories):
         for i in list(range(0,len(intersection))):
             categories_dict[i+1] = intersection[i]
     else:
-        categories_dict[1] = 'general'
+        categories_dict[1] = 'general_nutrition'
     return categories_dict

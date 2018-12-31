@@ -4,6 +4,7 @@ import feedparser
 import pandas as pd
 import re
 import time
+from info import *
 
 
 def feed_urls(search_words, media_value='podcast', entity_value='podcast'):

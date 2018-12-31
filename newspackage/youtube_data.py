@@ -27,7 +27,7 @@ def clean_youtube_time(string):
             time = 1
     return time
 
-def youtube_search(q, max_results=50,order="date", token=None, location=None, location_radius=None):
+def youtube_search(q, max_results=5,order="date", token=None, location=None, location_radius=None):
 
     youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,developerKey=DEVELOPER_KEY)
 
@@ -75,25 +75,51 @@ def youtube_search(q, max_results=50,order="date", token=None, location=None, lo
         else:
             tags = []
 
-        youtube_dict = {'tags':tags,'source_id': channelId,'source': channelTitle,'categoryId':categoryId,'title':title,'videoId':videoId,'viewCount':viewCount,'commentCount':commentCount,'favoriteCount':favoriteCount,
-                        'formality':'Intermediate','difficulty':'Easy', 'medium':'video','date':date, 'description': description, 'web_url':url, 'image_url':image_url, 'length':length}
+        youtube_dict = {'tags':tags,'source_id': 'Youtube','source': channelTitle,'categoryId':categoryId,'title':title,'videoId':videoId,'viewCount':viewCount,'commentCount':commentCount,'favoriteCount':favoriteCount,
+                        'formality':'Intermediate', 'medium':'video','date':date, 'description': description, 'web_url':url, 'image_url':image_url, 'length':length}
         all_dicts.append(youtube_dict)
     return pd.DataFrame(all_dicts)
 
+def find_categories(text_to_tokenize, categories):
+    categories_dict = {1:'null',2:'null',3:'null',4:'null',5:'null'}
+    words = tokenize_text(text_to_tokenize)
+    intersection = list(words.intersection(categories))
+    if len(intersection) > 0:
+        for i in list(range(0,len(intersection))):
+            categories_dict[i+1] = intersection[i]
+    else:
+        categories_dict[1] = 'general'
+    return categories_dict
+
+
 def add_category(df, categories):
-    # cats = ['keto','ketogenic','paleo','paleolithic','vegan','vegetarian']
-    all_params = []
+    topics = []
+    topics2 = []
+    topics3 = []
+    topics4 = []
+    topics5 = []
     for index, row in df.iterrows():
+        categories_dict = {1:'null',2:'null',3:'null',4:'null',5:'null'}
         try:
             intersect = list(set(row.tags).intersection(categories))
             if len(intersect) > 0:
-                category = intersect[0]
+                for i in list(range(0,len(intersection))):
+                    categories_dict[i+1] = intersection[i]
             else:
-                category = row.tags[0]
+                categories_dict[1] = 'general_nutrition'
         except:
-            category = 'general'
-        all_params.append(category)
-    df['param'] = all_params
+            categories_dict[1] = 'general_nutrition'
+        topics.append(categories_dict[1])
+        topics2.append(categories_dict[2])
+        topics3.append(categories_dict[3])
+        topics4.append(categories_dict[4])
+        topics5.append(categories_dict[5])
+    df['param_1'] = topics
+    df['param_2'] = topics2
+    df['param_3'] = topics3
+    df['param_4'] = topics4
+    df['param_5'] = topics5
+    df['difficulty'] = random_difficulties(len(df['param_1']))
     return df
 
 def youtube_api_call(list_accounts, categories):
