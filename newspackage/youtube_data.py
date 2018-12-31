@@ -27,7 +27,7 @@ def clean_youtube_time(string):
             time = 1
     return time
 
-def youtube_search(q, max_results=5,order="date", token=None, location=None, location_radius=None):
+def youtube_search(q, max_results=50,order="date", token=None, location=None, location_radius=None):
 
     youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,developerKey=DEVELOPER_KEY)
 

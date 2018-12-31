@@ -161,7 +161,7 @@ def add_content_category_objects():
         session.add(object)
         session.commit()
 
-#
+
 print('Intermediate text search...')
 print('News API')
 NAPI = call_news_api(nutrition_cats)
