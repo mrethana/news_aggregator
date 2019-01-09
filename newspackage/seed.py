@@ -10,6 +10,7 @@ import warnings
 from info import *
 from itunes import *
 from blogs import *
+from moocs import *
 warnings.filterwarnings("ignore")
 
 new_medium_objects = []
@@ -164,15 +165,15 @@ def add_content_category_objects():
 
 
 # print('Intermediate text search...')
-print('Everyday Health')
-EH = scrape_everyday_health(nutrition_cats)
-find_or_create_content_categories(EH)
-add_medium_objects()
-add_provider_objects()
-add_content_objects()
-add_category_objects()
-add_formality_objects()
-add_difficulty_objects()
+# print('Everyday Health')
+# EH = scrape_everyday_health(nutrition_cats)
+# find_or_create_content_categories(EH)
+# add_medium_objects()
+# add_provider_objects()
+# add_content_objects()
+# add_category_objects()
+# add_formality_objects()
+# add_difficulty_objects()
 
 
 # print('News API')
@@ -278,3 +279,13 @@ add_difficulty_objects()
 # add_category_objects()
 # add_formality_objects()
 # add_difficulty_objects()
+
+print('UDEMY search....')
+udemy = create_sample_udemy(udemy_dummy, nutrition_cats)
+find_or_create_content_categories(udemy)
+add_medium_objects()
+add_provider_objects()
+add_content_objects()
+add_category_objects()
+add_formality_objects()
+add_difficulty_objects()

@@ -103,7 +103,7 @@ def create_sample_fb(list_tuples, categories_list):
     # df['source'] = 'NYT Health'
     df['source_id'] = 'Facebook'
     df['formality'] = 'Informal'
-    length = len(df.web_url)
+    length = len(df.title)
     df['difficulty'] = random_difficulties(length)
     df['length'] = random_length(length)
     df['param_1'] = random_cat(diets,length)
@@ -155,7 +155,7 @@ def create_sample_insta(list_tuples, categories_list):
     df['source_id'] = 'Instagram'
     df['formality'] = 'Informal'
     df['medium'] = 'video'
-    length = len(df.web_url)
+    length = len(df.title)
     df['difficulty'] = random_difficulties(length)
     df['length'] = random_length(length)
     df['param_1'] = random_cat(diets,length)
