@@ -159,7 +159,7 @@ nltk==3.3
 nms==0.1.5
 nose==1.3.7
 nose-json==0.2.4
-notebook==5.5.0
+notebook==6.1.5
 numba==0.38.0
 numexpr==2.6.5
 numpy==1.14.3
